@@ -13,7 +13,7 @@ class CardShow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Card")),
+      appBar: AppBar(title: Text(cardData.name + " - ID Card" ?? " ID Card")),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Padding(
@@ -28,12 +28,20 @@ class CardShow extends StatelessWidget {
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.green.shade800),
+                          color: Colors.greenAccent.shade700),
                     ),
-                    Text(DateFormat('yyyy-MM-dd – kk:mm a')
-                        .format(box!.get("lastTime"))),
+                    Text(
+                      DateFormat('yyyy-MM-dd – kk:mm a')
+                          .format(box!.get("lastTime")),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.greenAccent.shade700,
+                      ),
+                    ),
                   ],
                 ),
+              const SizedBox(height: 5),
               Card(
                 elevation: 9.0,
                 child: Container(
@@ -163,14 +171,16 @@ class CardShow extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const Divider(
-                          height: 14, color: Colors.blueGrey, thickness: .1),
-                      Text(
-                        cardData.description ?? "",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      )
+                      if (cardData.description != null)
+                        const Divider(
+                            height: 14, color: Colors.blueGrey, thickness: .1),
+                      if (cardData.description != null)
+                        Text(
+                          cardData.description ?? "",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        )
                     ],
                   ),
                 ),
@@ -179,13 +189,13 @@ class CardShow extends StatelessWidget {
                 hourMinuteDigitTextStyle: Theme.of(context)
                     .textTheme
                     .headlineMedium!
-                    .copyWith(color: Colors.black),
+                    .copyWith(color: Colors.greenAccent.shade700),
                 digitAnimationStyle: Curves.easeInQuart,
                 is24HourTimeFormat: false,
                 secondDigitTextStyle: Theme.of(context)
                     .textTheme
                     .bodySmall!
-                    .copyWith(color: Colors.black),
+                    .copyWith(color: Colors.greenAccent.shade700),
                 colon: Text(
                   ":",
                   style: Theme.of(context)
@@ -216,16 +226,17 @@ class CardShow extends StatelessWidget {
                         children: [
                           Image.asset("assets/logo.png", width: 90),
                           Image.asset("assets/sgch-logo.png", width: 90),
+                          Image.asset("assets/women.png", width: 90),
                         ],
                       ),
                       const SizedBox(height: 15),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset("assets/logo.jpeg", width: 90),
+                          Image.asset("assets/logo.jpeg", width: 100),
                           const SizedBox(width: 20),
                           Image.asset("assets/link-wentworth-logo.png",
-                              width: 90),
+                              width: 100),
                         ],
                       ),
                       const SizedBox(height: 15),

@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tradie_id/config/config.dart';
 import 'package:tradie_id/home/ui/card_show.dart';
 import 'package:tradie_id/model/company_list_model.dart';
@@ -57,8 +58,8 @@ class _CardListState extends State<CardListScreen> {
       Response res = await Dio().post(
           "http://68.178.163.90:4500/api/employe/companyList",
           data: {"phone_no": box!.get("phone")});
-      log(box!.get("phone").toString());
-      log(res.data.toString());
+      // log(box!.get("phone").toString());
+      // log(res.data.toString());
 
       CompanyListModel data = CompanyListModel.fromJson(res.data);
 
@@ -99,13 +100,32 @@ class _CardListState extends State<CardListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("My Cards"),
+        centerTitle: true,
+        leading: Padding(
+          padding:
+              const EdgeInsets.only(left: 10, top: 10, bottom: 10, right: 10),
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(30),
+              child: Image.asset(
+                "assets/idlogo.png",
+              )),
+        ),
+        title: const Text("Tradie Id"),
         actions: [
-          IconButton(
-              onPressed: () {
-                apiCall();
-              },
-              icon: const Icon(Icons.sync)),
+          Padding(
+            padding: const EdgeInsets.only(right: 18),
+            child: InkWell(
+                onTap: () {
+                  apiCall();
+                },
+                child: const Row(
+                  children: [
+                    Icon(Icons.sync),
+                    SizedBox(width: 2),
+                    Text("Sync")
+                  ],
+                )),
+          ),
         ],
       ),
       body: Padding(
@@ -123,14 +143,33 @@ class _CardListState extends State<CardListScreen> {
                         padding: const EdgeInsets.only(bottom: 10),
                         child: InkWell(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (a) => CardShow(
-                                  cardData: cardData,
+                            try {
+                              var lastSync = box!.get("lastTime");
+                              if (DateTime.now().difference(lastSync).inDays <=
+                                  10) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (a) => CardShow(
+                                      cardData: cardData,
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                Fluttertoast.showToast(
+                                    msg:
+                                        "Since Last 10 days you data not synced\n connect your device with network & sync");
+                              }
+                            } catch (e) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (a) => CardShow(
+                                    cardData: cardData,
+                                  ),
                                 ),
-                              ),
-                            );
+                              );
+                            }
                           },
                           child: Column(
                             children: [
@@ -191,25 +230,30 @@ class _CardListState extends State<CardListScreen> {
                                                 CrossAxisAlignment.end,
                                             children: [
                                               Text(
-                                                "Company Id: ${cardData.companyId}",
+                                                "#${cardData.companyId}",
                                                 style: const TextStyle(
                                                     color: Colors.black,
+                                                    fontSize: 16,
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
+                                              const SizedBox(height: 5),
                                               Text(
                                                 "Expiry: ${cardData.expiryDate}",
                                                 style: const TextStyle(
+                                                    fontSize: 14,
                                                     color: Colors.black),
                                               ),
                                             ],
                                           ),
                                         ],
                                       ),
+                                      const SizedBox(height: 5),
                                       const Divider(
                                           height: 14,
                                           color: Colors.blueGrey,
                                           thickness: .1),
+                                      const SizedBox(height: 5),
                                       Text(
                                         cardData.name ?? "",
                                         style: const TextStyle(

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tradie_id/config/config.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,9 +19,6 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   TextEditingController firstNameControllers =
       TextEditingController(text: box!.get("name").toString());
-
-  TextEditingController cardNoControllers =
-      TextEditingController(text: box!.get("cardNo").toString());
 
   TextEditingController emailControllers =
       TextEditingController(text: box!.get("email").toString());
@@ -89,14 +87,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text("First Name",
-                          style: TextStyle(color: Colors.black)),
                       const SizedBox(height: 5),
                       TextFormField(
-                        enabled: false,
                         decoration: const InputDecoration(
-                          hintText: 'First Name',
-                        ),
+                            labelText: 'First Name',
+                            border: OutlineInputBorder()),
                         controller: firstNameControllers,
                         keyboardType: TextInputType.name,
                         textInputAction: TextInputAction.next,
@@ -107,34 +102,28 @@ class _ProfilePageState extends State<ProfilePage> {
                           return null;
                         },
                       ),
+                      // const SizedBox(height: 15),
+                      // const Text("Last Name",
+                      //     style: TextStyle(color: Colors.black)),
+                      // const SizedBox(height: 5),
+                      // TextFormField(
+                      //   decoration: const InputDecoration(
+                      //     hintText: 'Last Name',
+                      //   ),
+                      //   controller: cardNoControllers,
+                      //   keyboardType: TextInputType.name,
+                      //   textInputAction: TextInputAction.next,
+                      //   validator: (String? value) {
+                      //     if (value!.isEmpty) {
+                      //       return 'Enter Last Name';
+                      //     }
+                      //     return null;
+                      //   },
+                      // ),
                       const SizedBox(height: 15),
-                      const Text("Last Name",
-                          style: TextStyle(color: Colors.black)),
-                      const SizedBox(height: 5),
                       TextFormField(
-                        enabled: false,
                         decoration: const InputDecoration(
-                          hintText: 'Last Name',
-                        ),
-                        controller: cardNoControllers,
-                        keyboardType: TextInputType.name,
-                        textInputAction: TextInputAction.next,
-                        validator: (String? value) {
-                          if (value!.isEmpty) {
-                            return 'Enter Last Name';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 15),
-                      const Text("Email",
-                          style: TextStyle(color: Colors.black)),
-                      const SizedBox(height: 5),
-                      TextFormField(
-                        enabled: false,
-                        decoration: const InputDecoration(
-                          hintText: 'Email',
-                        ),
+                            labelText: 'Email', border: OutlineInputBorder()),
                         controller: emailControllers,
                         keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.done,
@@ -160,6 +149,17 @@ class _ProfilePageState extends State<ProfilePage> {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: ElevatedButton(
+            onPressed: () {
+              box!.put("name", firstNameControllers.text.toString());
+              box!.put("email", emailControllers.text.toString());
+              Fluttertoast.showToast(msg: "Profile Updated");
+              setState(() {});
+            },
+            child: const Text("Save")),
       ),
       // bottomNavigationBar: Padding(
       //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),

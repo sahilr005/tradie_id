@@ -39,47 +39,49 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       color: Colors.green,
                     )),
               ),
-              Card(
-                child: ListTile(
-                  onTap: () async {
-                    try {
-                      !await launchUrl(Uri.parse(
-                          "https://esofttechnologies.com.au/portfolio.html"));
-                    } catch (e) {}
-                  },
-                  title: const Text("Our Services"),
-                  trailing: const Icon(Icons.sensors_rounded),
+              if (box!.get("email").toString() == "sahilr96649@gmail.com")
+                Card(
+                  child: ListTile(
+                    onTap: () async {
+                      try {
+                        !await launchUrl(Uri.parse(
+                            "https://esofttechnologies.com.au/portfolio.html"));
+                      } catch (e) {}
+                    },
+                    title: const Text("Our Services"),
+                    trailing: const Icon(Icons.sensors_rounded),
+                  ),
                 ),
-              ),
               Card(
                 child: ListTile(
                   onTap: () {
                     showAboutDialog(
                       context: context,
-                      applicationLegalese: "E-soft",
-                      applicationName: "Tradie Id",
-                      applicationVersion: "1.0.0",
+                      applicationLegalese: "Tradie ID Legalese",
+                      applicationName: "Tradie ID",
+                      applicationVersion: "1.0.0+10",
                     );
                   },
-                  title: const Text("About Us"),
+                  title: const Text("About Tradie ID"),
                   trailing: const Icon(
                     Icons.info,
                     color: Colors.blue,
                   ),
                 ),
               ),
-              Card(
-                child: ListTile(
-                  onTap: () {
-                    showLogoutDialog(context, true);
-                  },
-                  title: const Text("Delete Account"),
-                  trailing: Icon(
-                    Icons.delete,
-                    color: Colors.red.shade800,
+              if (box!.get("email").toString() == "sahilr96649@gmail.com")
+                Card(
+                  child: ListTile(
+                    onTap: () {
+                      showLogoutDialog(context, true);
+                    },
+                    title: const Text("Delete Account"),
+                    trailing: Icon(
+                      Icons.delete,
+                      color: Colors.red.shade800,
+                    ),
                   ),
                 ),
-              ),
               Card(
                 child: ListTile(
                   onTap: () {

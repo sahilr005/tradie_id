@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
    <application
-        android:label="tradie_id"
+        android:label="Tradie Id"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

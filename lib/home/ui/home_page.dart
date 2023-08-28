@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   final List<Widget> _tabs =
       box!.get("email").toString() != "sahilr96649@gmail.com"
-          ? [const HomeCard(), const SettingsScreen()]
+          ? [const CardListScreen(), const SettingsScreen()]
           : [
               const HomeCard(),
               const InquiryScreen(),
