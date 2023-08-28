@@ -1,5 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lottie/lottie.dart';
 import 'package:tradie_id/home/ui/home_page.dart';
 import 'package:tradie_id/login/bloc/login_bloc.dart';
@@ -71,6 +73,7 @@ class LoginForm extends StatelessWidget {
             const SizedBox(height: 50),
             TextField(
               controller: usernameController,
+              keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
                 labelText: 'Email',
                 border: OutlineInputBorder(),
@@ -86,7 +89,29 @@ class LoginForm extends StatelessWidget {
               obscureText: true,
             ),
             const SizedBox(height: 14.0),
-            // const Text("Forgot Password"),
+            InkWell(
+              onTap: () async {
+                if (usernameController.text.isEmpty) {
+                  Fluttertoast.showToast(msg: "Enter Email Id");
+                } else {
+                  Response? res = await Dio().post(
+                      "http://68.178.163.90:4500/api/employe/forgotPassword",
+                      data: {"email": usernameController.text}).catchError((e) {
+                    Fluttertoast.showToast(msg: e.response!.data["message"]);
+                  });
+
+                  if (res.statusCode == 200) {
+                    Fluttertoast.showToast(
+                      msg: res.data["message"].toString(),
+                      toastLength: Toast.LENGTH_LONG,
+                    );
+                  }
+                }
+              },
+              child: const Align(
+                  alignment: Alignment.centerRight,
+                  child: Text("Forgot Password?")),
+            ),
             const SizedBox(height: 24.0),
             ElevatedButton(
               onPressed: () {
@@ -107,6 +132,56 @@ class LoginForm extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class ForgotPasswordDialog extends StatefulWidget {
+  const ForgotPasswordDialog({super.key});
+
+  @override
+  _ForgotPasswordDialogState createState() => _ForgotPasswordDialogState();
+}
+
+class _ForgotPasswordDialogState extends State<ForgotPasswordDialog> {
+  final TextEditingController _emailController = TextEditingController();
+
+  void _sendPasswordResetEmail() {
+    // Implement your logic here to send a password reset email
+    // You can use a package like Firebase to handle email authentication
+    // Example: FirebaseAuthentication.sendPasswordResetEmail(_emailController.text);
+
+    // Close the dialog after sending the email
+    Navigator.of(context).pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Forgot Password'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _emailController,
+            decoration: const InputDecoration(labelText: 'Email'),
+          ),
+        ],
+      ),
+      actions: <Widget>[
+        ElevatedButton(
+          child: const Text('Cancel'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        ElevatedButton(
+          child: const Text('Send Email'),
+          onPressed: () {
+            _sendPasswordResetEmail();
+          },
+        ),
+      ],
     );
   }
 }

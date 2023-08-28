@@ -1,8 +1,10 @@
-import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:slide_digital_clock/slide_digital_clock.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_analog_clock/flutter_analog_clock.dart';
 import 'package:tradie_id/config/config.dart';
 import 'package:intl/intl.dart';
+import 'package:tradie_id/home/ui/card_list.dart';
 
 class CardShow extends StatelessWidget {
   final cardData;
@@ -19,8 +21,19 @@ class CardShow extends StatelessWidget {
           child: Column(
             children: [
               if (box!.get("lastTime") != null)
-                Text(
-                    "Last Sync Time :- ${DateFormat('yyyy-MM-dd – kk:mm a').format(box!.get("lastTime"))}"),
+                Row(
+                  children: [
+                    Text(
+                      "Last Sync Time :- ",
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green.shade800),
+                    ),
+                    Text(DateFormat('yyyy-MM-dd – kk:mm a')
+                        .format(box!.get("lastTime"))),
+                  ],
+                ),
               Card(
                 elevation: 9.0,
                 child: Container(
@@ -44,26 +57,40 @@ class CardShow extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
-                                    const SizedBox(
-                                        height: 50,
-                                        width: 40,
-                                        child: AnalogClock()),
-                                    const SizedBox(width: 10),
-                                    Image.network(
-                                      cardData.companyLogo.toString(),
-                                      height: 30,
+                                    FutureBuilder<List<int>?>(
+                                      future: getCachedImage(
+                                          cardData.companyLogo.toString()),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return const CircularProgressIndicator();
+                                        } else if (snapshot.hasData) {
+                                          return Image.memory(
+                                            Uint8List.fromList(snapshot.data!),
+                                            height: 30,
+                                            fit: BoxFit.cover,
+                                          );
+                                        } else {
+                                          return const Text(
+                                              "Image not available");
+                                        }
+                                      },
                                     ),
+                                    // Image.network(
+                                    //   cardData.companyLogo.toString(),
+                                    //   height: 30,
+                                    // ),
                                   ],
                                 ),
                                 const Spacer(),
                                 Text(
-                                  box!.get("name").toString(),
+                                  cardData.employeName.toString(),
                                   style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 Text(
-                                  cardData.role.toString(),
+                                  cardData.employeRole.toString(),
                                   style: const TextStyle(fontSize: 16),
                                 ),
                                 const SizedBox(height: 10),
@@ -96,20 +123,35 @@ class CardShow extends StatelessWidget {
                                 style: const TextStyle(color: Colors.black),
                               ),
                               const SizedBox(height: 4),
-                              box!.get("imagePath") != null
-                                  ? Image.file(
-                                      File(box!.get("imagePath")),
+                              FutureBuilder<List<int>?>(
+                                future: getCachedImage(
+                                    cardData.profileImage.toString()),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const CircularProgressIndicator();
+                                  } else if (snapshot.hasData) {
+                                    return Image.memory(
+                                      Uint8List.fromList(snapshot.data!),
                                       height: 130,
                                       width: 90,
-                                    )
-                                  : box!.get("image") == null ||
-                                          box!.get("image").toString().isEmpty
-                                      ? const SizedBox()
-                                      : Image.network(
-                                          box!.get("image").toString(),
-                                          height: 130,
-                                          width: 90,
-                                        ),
+                                      fit: BoxFit.cover,
+                                    );
+                                  } else {
+                                    return Image.asset(
+                                      "assets/no_user.jpg",
+                                      height: 130,
+                                      width: 90,
+                                      fit: BoxFit.cover,
+                                    );
+                                  }
+                                },
+                              ),
+                              // Image.network(
+                              //   cardData.profileImage.toString(),
+                              //   height: 130,
+                              //   width: 90,
+                              // ),
 
                               // Image.network(
                               //   cardData.companyLogo!,
@@ -133,6 +175,25 @@ class CardShow extends StatelessWidget {
                   ),
                 ),
               ),
+              DigitalClock(
+                hourMinuteDigitTextStyle: Theme.of(context)
+                    .textTheme
+                    .headlineMedium!
+                    .copyWith(color: Colors.black),
+                digitAnimationStyle: Curves.easeInQuart,
+                is24HourTimeFormat: false,
+                secondDigitTextStyle: Theme.of(context)
+                    .textTheme
+                    .bodySmall!
+                    .copyWith(color: Colors.black),
+                colon: Text(
+                  ":",
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium!
+                      .copyWith(color: Colors.black),
+                ),
+              ),
               Card(
                 elevation: 9.0,
                 child: Container(
@@ -154,36 +215,28 @@ class CardShow extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Image.asset("assets/logo.png", width: 90),
-                          Image.network(
-                              "https://afrbestplacestowork.com/wp-content/uploads/2021/07/sgch-logo.png",
-                              width: 90),
-                          // Image.network(
-                          //     "https://afrbestplacestowork.com/wp-content/uploads/2021/07/sgch-logo.png",
-                          //     width: 90),
+                          Image.asset("assets/sgch-logo.png", width: 90),
                         ],
                       ),
                       const SizedBox(height: 15),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.network(
-                              "https://www.humehousing.com.au/template/img/logo.jpg",
-                              width: 90),
+                          Image.asset("assets/logo.jpeg", width: 90),
                           const SizedBox(width: 20),
-                          Image.network(
-                              "https://www.linkwentworth.org.au/wp-content/uploads/2022/06/link-wentworth-logo.png",
+                          Image.asset("assets/link-wentworth-logo.png",
                               width: 90),
                         ],
                       ),
                       const SizedBox(height: 15),
-                      Image.network(
-                        "https://credconsulting.com.au/wp-content/uploads/2021/11/NSW-LAHC-1024x289.png",
+                      Image.asset(
+                        "assets/NSW-LAHC-1024x289.png",
                         width: 170,
                       ),
                     ],
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

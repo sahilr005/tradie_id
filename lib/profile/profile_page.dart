@@ -1,7 +1,5 @@
 import 'dart:developer';
-import 'dart:io';
 import 'package:tradie_id/config/config.dart';
-import 'package:tradie_id/login/ui/login_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -59,27 +57,27 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              GestureDetector(
-                onTap: () {
-                  _pickImage(); // Open image picker when the avatar is tapped
-                },
-                child: box!.get("imagePath") != null
-                    ? CircleAvatar(
-                        radius: 50,
-                        backgroundImage: FileImage(File(box!.get("imagePath"))),
-                      )
-                    : box!.get("image") == null ||
-                            box!.get("image").toString().isEmpty
-                        ? const CircleAvatar(
-                            radius: 50,
-                            child: Icon(Icons.add_a_photo),
-                          )
-                        : CircleAvatar(
-                            radius: 50,
-                            backgroundImage:
-                                NetworkImage(box!.get("image").toString()),
-                          ),
-              ),
+              // GestureDetector(
+              //   onTap: () {
+              //     _pickImage(); // Open image picker when the avatar is tapped
+              //   },
+              //   child: box!.get("imagePath") != null
+              //       ? CircleAvatar(
+              //           radius: 50,
+              //           backgroundImage: FileImage(File(box!.get("imagePath"))),
+              //         )
+              //       : box!.get("image") == null ||
+              //               box!.get("image").toString().isEmpty
+              //           ? const CircleAvatar(
+              //               radius: 50,
+              //               child: Icon(Icons.add_a_photo),
+              //             )
+              //           : CircleAvatar(
+              //               radius: 50,
+              //               backgroundImage:
+              //                   NetworkImage(box!.get("image").toString()),
+              //             ),
+              // ),
               const SizedBox(height: 20),
               Card(
                 borderOnForeground: true,
@@ -95,6 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           style: TextStyle(color: Colors.black)),
                       const SizedBox(height: 5),
                       TextFormField(
+                        enabled: false,
                         decoration: const InputDecoration(
                           hintText: 'First Name',
                         ),
@@ -113,6 +112,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           style: TextStyle(color: Colors.black)),
                       const SizedBox(height: 5),
                       TextFormField(
+                        enabled: false,
                         decoration: const InputDecoration(
                           hintText: 'Last Name',
                         ),
@@ -131,6 +131,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           style: TextStyle(color: Colors.black)),
                       const SizedBox(height: 5),
                       TextFormField(
+                        enabled: false,
                         decoration: const InputDecoration(
                           hintText: 'Email',
                         ),
@@ -160,57 +161,57 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white, backgroundColor: Colors.red),
-              onPressed: () {
-                box!.clear();
-                setState(() {});
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (a) => LoginPage()),
-                    (route) => false);
-              },
-              child: const Padding(
-                padding: EdgeInsets.fromLTRB(0, 6, 0, 6),
-                child: Center(
-                  child: Text(
-                    'Logout',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white, backgroundColor: Colors.red),
-              onPressed: () {
-                deleteAcDialog(context);
-              },
-              child: const Padding(
-                padding: EdgeInsets.fromLTRB(0, 6, 0, 6),
-                child: Center(
-                  child: Text(
-                    'Delete Account',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+      // bottomNavigationBar: Padding(
+      //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      //   child: Column(
+      //     mainAxisSize: MainAxisSize.min,
+      //     children: [
+      //       ElevatedButton(
+      //         style: ElevatedButton.styleFrom(
+      //             foregroundColor: Colors.white, backgroundColor: Colors.red),
+      //         onPressed: () {
+      //           box!.clear();
+      //           setState(() {});
+      //           Navigator.pushAndRemoveUntil(
+      //               context,
+      //               MaterialPageRoute(builder: (a) => LoginPage()),
+      //               (route) => false);
+      //         },
+      //         child: const Padding(
+      //           padding: EdgeInsets.fromLTRB(0, 6, 0, 6),
+      //           child: Center(
+      //             child: Text(
+      //               'Logout',
+      //               style: TextStyle(
+      //                 fontSize: 16,
+      //                 fontWeight: FontWeight.w600,
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //       ),
+      //       ElevatedButton(
+      //         style: ElevatedButton.styleFrom(
+      //             foregroundColor: Colors.white, backgroundColor: Colors.red),
+      //         onPressed: () {
+      //           deleteAcDialog(context);
+      //         },
+      //         child: const Padding(
+      //           padding: EdgeInsets.fromLTRB(0, 6, 0, 6),
+      //           child: Center(
+      //             child: Text(
+      //               'Delete Account',
+      //               style: TextStyle(
+      //                 fontSize: 16,
+      //                 fontWeight: FontWeight.w600,
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // ),
     );
   }
 

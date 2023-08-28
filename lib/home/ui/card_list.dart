@@ -1,3 +1,5 @@
+import 'dart:developer';
+import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:tradie_id/config/config.dart';
@@ -24,6 +26,23 @@ class RListAdapter extends TypeAdapter<RList> {
   }
 }
 
+// Retrieves the cached image
+Future<List<int>?> getCachedImage(String imageUrl) async {
+  final box = await Hive.openBox<List<int>>('imageBox');
+  return box.get(imageUrl);
+}
+
+// Caches the image using Hive
+Future<void> cacheImage(String imageUrl) async {
+  final response = await Dio().get<List<int>>(
+    imageUrl,
+    options: Options(responseType: ResponseType.bytes),
+  );
+
+  final box = await Hive.openBox<List<int>>('imageBox');
+  await box.put(imageUrl, response.data!);
+}
+
 class CardListScreen extends StatefulWidget {
   const CardListScreen({super.key});
 
@@ -32,14 +51,32 @@ class CardListScreen extends StatefulWidget {
 }
 
 class _CardListState extends State<CardListScreen> {
-  List<RList>? r;
+  List? r;
   apiCall() async {
     try {
       Response res = await Dio().post(
           "http://68.178.163.90:4500/api/employe/companyList",
           data: {"phone_no": box!.get("phone")});
+      log(box!.get("phone").toString());
+      log(res.data.toString());
 
       CompanyListModel data = CompanyListModel.fromJson(res.data);
+
+      // Cache image data for each company
+      try {
+        for (var i = 0; i < data.result!.list!.length; i++) {
+          final companyLogoUrl = data.result!.list![i].companyLogo.toString();
+          final profileImageUrl = data.result!.list![i].profileImage.toString();
+          if (companyLogoUrl.isNotEmpty || companyLogoUrl != "") {
+            await cacheImage(companyLogoUrl);
+          }
+          if (profileImageUrl.isNotEmpty || profileImageUrl != "") {
+            await cacheImage(profileImageUrl);
+          }
+        }
+      } catch (e) {
+        log(e.toString());
+      }
 
       box!.put("cardList", data.result!.list!);
       box!.put("lastTime", DateTime.now());
@@ -48,6 +85,7 @@ class _CardListState extends State<CardListScreen> {
           .showSnackBar(const SnackBar(content: Text("You are offline")));
     }
     r = box!.get("cardList");
+    // log(data.result!.list.toString());
     setState(() {});
   }
 
@@ -63,101 +101,131 @@ class _CardListState extends State<CardListScreen> {
       appBar: AppBar(
         title: const Text("My Cards"),
         actions: [
-          InkWell(
-              onTap: () {
+          IconButton(
+              onPressed: () {
                 apiCall();
               },
-              child: const Icon(Icons.abc))
+              icon: const Icon(Icons.sync)),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: r == null
             ? const Center(child: CircularProgressIndicator())
-            : ListView.builder(
-                itemCount: r!.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  var cardData = r![index];
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (a) => CardShow(
-                              cardData: cardData,
-                            ),
-                          ),
-                        );
-                      },
-                      child: Column(
-                        children: [
-                          Card(
-                            elevation: 9.0,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(9),
-                                color: Colors.white,
+            : r!.isEmpty
+                ? const Center(child: Text("No Data Found"))
+                : ListView.builder(
+                    itemCount: r!.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      var cardData = r![index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (a) => CardShow(
+                                  cardData: cardData,
+                                ),
                               ),
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 16, horizontal: 16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                            );
+                          },
+                          child: Column(
+                            children: [
+                              Card(
+                                elevation: 9.0,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(9),
+                                    color: Colors.white,
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 16, horizontal: 16),
+                                  child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Image.network(
-                                        cardData.companyLogo.toString(),
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                .2,
-                                        fit: BoxFit.cover,
-                                      ),
-                                      Column(
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.end,
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            "Company Id: ${cardData.companyId}",
-                                            style: const TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold),
+                                          FutureBuilder<List<int>?>(
+                                            future: getCachedImage(cardData
+                                                .companyLogo
+                                                .toString()),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.connectionState ==
+                                                  ConnectionState.waiting) {
+                                                return const CircularProgressIndicator();
+                                              } else if (snapshot.hasData &&
+                                                  snapshot.data != null) {
+                                                return Image.memory(
+                                                  Uint8List.fromList(
+                                                      snapshot.data!),
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.2,
+                                                  fit: BoxFit.cover,
+                                                );
+                                              } else {
+                                                return const Text(
+                                                    "Image not available");
+                                              }
+                                            },
                                           ),
-                                          Text(
-                                            "Expiry: ${cardData.expiryDate}",
-                                            style: const TextStyle(
-                                                color: Colors.black),
+
+                                          // Image.network(
+                                          //   cardData.companyLogo.toString(),
+                                          //   width:
+                                          //       MediaQuery.of(context).size.width *
+                                          //           .2,
+                                          //   fit: BoxFit.cover,
+                                          // ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                "Company Id: ${cardData.companyId}",
+                                                style: const TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              Text(
+                                                "Expiry: ${cardData.expiryDate}",
+                                                style: const TextStyle(
+                                                    color: Colors.black),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
+                                      const Divider(
+                                          height: 14,
+                                          color: Colors.blueGrey,
+                                          thickness: .1),
+                                      Text(
+                                        cardData.name ?? "",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      )
                                     ],
                                   ),
-                                  const Divider(
-                                      height: 14,
-                                      color: Colors.blueGrey,
-                                      thickness: .1),
-                                  Text(
-                                    cardData.name ?? "",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  )
-                                ],
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
+                        ),
+                      );
+                    },
+                  ),
       ),
     );
   }
