@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "768537253618",
+    "project_id": "tradieid-ffe8f",
+    "storage_bucket": "tradieid-ffe8f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:768537253618:android:e981b35425d7b0185ae26b",
+        "android_client_info": {
+          "package_name": "com.tradie.Id"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "768537253618-06gqsp0ubu8lg9u64ll6c331g9j9gbm6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCepWWSCl6UsnkzcB97OZhRsu7jIj5lL4o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "768537253618-06gqsp0ubu8lg9u64ll6c331g9j9gbm6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "768537253618-c3g22efnl7rg3d1se7hl1pfe56gia0v9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.esoft.tradieid.card"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

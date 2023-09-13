@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart' as gt;
 import 'package:tradie_id/config/config.dart';
 import 'package:tradie_id/home/ui/card_show.dart';
 import 'package:tradie_id/model/company_list_model.dart';
@@ -28,13 +29,13 @@ class RListAdapter extends TypeAdapter<RList> {
 }
 
 // Retrieves the cached image
-Future<List<int>?> getCachedImage(String imageUrl) async {
+getCachedImage(String imageUrl) async {
   final box = await Hive.openBox<List<int>>('imageBox');
   return box.get(imageUrl);
 }
 
 // Caches the image using Hive
-Future<void> cacheImage(String imageUrl) async {
+cacheImage(String imageUrl) async {
   final response = await Dio().get<List<int>>(
     imageUrl,
     options: Options(responseType: ResponseType.bytes),
@@ -55,9 +56,12 @@ class _CardListState extends State<CardListScreen> {
   List? r;
   apiCall() async {
     try {
-      Response res = await Dio().post(
-          "http://68.178.163.90:4500/api/employe/companyList",
-          data: {"phone_no": box!.get("phone")});
+      Response res = await Dio()
+          .post("http://68.178.163.90:4500/api/employe/companyList", data: {
+        "phone_no": box!.get("phone").toString().contains("+")
+            ? box!.get("phone").toString().replaceRange(0, 3, "")
+            : box!.get("phone").toString()
+      });
       // log(box!.get("phone").toString());
       // log(res.data.toString());
 
@@ -104,11 +108,23 @@ class _CardListState extends State<CardListScreen> {
         leading: Padding(
           padding:
               const EdgeInsets.only(left: 10, top: 10, bottom: 10, right: 10),
-          child: ClipRRect(
-              borderRadius: BorderRadius.circular(30),
-              child: Image.asset(
-                "assets/idlogo.png",
-              )),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (box!.get("phone").toString() == "9664922646")
+                InkWell(
+                    onTap: () {
+                      gt.Get.back();
+                    },
+                    child: const Icon(Icons.arrow_back_ios)),
+              if (box!.get("phone").toString() != "9664922646")
+                ClipRRect(
+                    borderRadius: BorderRadius.circular(30),
+                    child: Image.asset(
+                      "assets/idlogo.png",
+                    )),
+            ],
+          ),
         ),
         title: const Text("Tradie Id"),
         actions: [
@@ -134,141 +150,159 @@ class _CardListState extends State<CardListScreen> {
             ? const Center(child: CircularProgressIndicator())
             : r!.isEmpty
                 ? const Center(child: Text("No Data Found"))
-                : ListView.builder(
-                    itemCount: r!.length,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      var cardData = r![index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: InkWell(
-                          onTap: () {
-                            try {
-                              var lastSync = box!.get("lastTime");
-                              if (DateTime.now().difference(lastSync).inDays <=
-                                  10) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (a) => CardShow(
-                                      cardData: cardData,
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                Fluttertoast.showToast(
-                                    msg:
-                                        "Since Last 10 days you data not synced\n connect your device with network & sync");
-                              }
-                            } catch (e) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (a) => CardShow(
-                                    cardData: cardData,
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                          child: Column(
-                            children: [
-                              Card(
-                                elevation: 9.0,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(9),
-                                    color: Colors.white,
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 16, horizontal: 16),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          FutureBuilder<List<int>?>(
-                                            future: getCachedImage(cardData
-                                                .companyLogo
-                                                .toString()),
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState ==
-                                                  ConnectionState.waiting) {
-                                                return const CircularProgressIndicator();
-                                              } else if (snapshot.hasData &&
-                                                  snapshot.data != null) {
-                                                return Image.memory(
-                                                  Uint8List.fromList(
-                                                      snapshot.data!),
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.2,
-                                                  fit: BoxFit.cover,
-                                                );
-                                              } else {
-                                                return const Text(
-                                                    "Image not available");
-                                              }
-                                            },
+                : RefreshIndicator(
+                    onRefresh: () => apiCall(),
+                    child: ListView.builder(
+                      itemCount: r!.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        var cardData = r![index];
+                        return cardData.status.toString() == "1"
+                            ? Padding(
+                                padding: const EdgeInsets.only(bottom: 10),
+                                child: InkWell(
+                                  onTap: () {
+                                    try {
+                                      var lastSync = box!.get("lastTime");
+                                      if (DateTime.now()
+                                              .difference(lastSync)
+                                              .inDays <=
+                                          10) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (a) => CardShow(
+                                              cardData: cardData,
+                                            ),
                                           ),
-
-                                          // Image.network(
-                                          //   cardData.companyLogo.toString(),
-                                          //   width:
-                                          //       MediaQuery.of(context).size.width *
-                                          //           .2,
-                                          //   fit: BoxFit.cover,
-                                          // ),
-                                          Column(
+                                        );
+                                      } else {
+                                        Fluttertoast.showToast(
+                                            msg:
+                                                "Since Last 10 days you data not synced\n connect your device with network & sync");
+                                      }
+                                    } catch (e) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (a) => CardShow(
+                                            cardData: cardData,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child: Column(
+                                    children: [
+                                      Card(
+                                        elevation: 9.0,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(9),
+                                            color: Colors.white,
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 16, horizontal: 16),
+                                          child: Column(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.end,
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              Text(
-                                                "#${cardData.companyId}",
-                                                style: const TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  FutureBuilder(
+                                                    future: getCachedImage(
+                                                        cardData.companyLogo
+                                                            .toString()),
+                                                    builder:
+                                                        (context, snapshot) {
+                                                      if (snapshot
+                                                              .connectionState ==
+                                                          ConnectionState
+                                                              .waiting) {
+                                                        return const CircularProgressIndicator();
+                                                      } else if (snapshot
+                                                              .hasData &&
+                                                          snapshot.data !=
+                                                              null) {
+                                                        dynamic d =
+                                                            snapshot.data!;
+                                                        return Image.memory(
+                                                          Uint8List.fromList(d),
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width *
+                                                              0.2,
+                                                          fit: BoxFit.cover,
+                                                        );
+                                                      } else {
+                                                        return const Text(
+                                                            "Image not available");
+                                                      }
+                                                    },
+                                                  ),
+
+                                                  // Image.network(
+                                                  //   cardData.companyLogo.toString(),
+                                                  //   width:
+                                                  //       MediaQuery.of(context).size.width *
+                                                  //           .2,
+                                                  //   fit: BoxFit.cover,
+                                                  // ),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.end,
+                                                    children: [
+                                                      Text(
+                                                        "#${cardData.license}",
+                                                        style: const TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      const SizedBox(height: 5),
+                                                      Text(
+                                                        "Expiry: ${cardData.expiryDate}",
+                                                        style: const TextStyle(
+                                                            fontSize: 14,
+                                                            color:
+                                                                Colors.black),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
                                               ),
                                               const SizedBox(height: 5),
+                                              const Divider(
+                                                  height: 14,
+                                                  color: Colors.blueGrey,
+                                                  thickness: .1),
+                                              const SizedBox(height: 5),
                                               Text(
-                                                "Expiry: ${cardData.expiryDate}",
+                                                cardData.name ?? "",
                                                 style: const TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.black),
-                                              ),
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              )
                                             ],
                                           ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 5),
-                                      const Divider(
-                                          height: 14,
-                                          color: Colors.blueGrey,
-                                          thickness: .1),
-                                      const SizedBox(height: 5),
-                                      Text(
-                                        cardData.name ?? "",
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w600,
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
+                              )
+                            : const SizedBox();
+                      },
+                    ),
                   ),
       ),
     );

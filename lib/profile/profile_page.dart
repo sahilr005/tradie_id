@@ -17,15 +17,15 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  TextEditingController firstNameControllers =
-      TextEditingController(text: box!.get("name").toString());
+  TextEditingController firstNameControllers = TextEditingController(
+      text: box!.containsKey("name") ? box!.get("name").toString() : "");
 
-  TextEditingController emailControllers =
-      TextEditingController(text: box!.get("email").toString());
+  TextEditingController emailControllers = TextEditingController(
+      text: box!.containsKey("email") ? box!.get("email").toString() : "");
 
   String? _imagePath;
 
-  Future<void> _pickImage() async {
+  _pickImage() async {
     final ImagePicker picker = ImagePicker();
     final XFile? pickedFile =
         await picker.pickImage(source: ImageSource.gallery);
@@ -215,7 +215,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Future<dynamic> deleteAcDialog(BuildContext context) {
+  deleteAcDialog(BuildContext context) {
     return showDialog(
       context: context,
       builder: (_) {

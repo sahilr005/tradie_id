@@ -16,25 +16,26 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       LoginButtonPressed event, Emitter<LoginState> emit) async {
     emit(LoginLoading());
     try {
-      LoginModel loginModel = await ApiCall.postLoginData(
-          email: event.username, password: event.password);
+      // LoginModel loginModel = await ApiCall.postLoginData(
+      //     email: event.username, password: event.password);
 
-      box!.put('id', loginModel.data!.result![0].id);
-      box!.put('name', loginModel.data!.result![0].name);
-      box!.put('phone', loginModel.data!.result![0].phoneNo);
-      box!.put('email', loginModel.data!.result![0].email);
-      box!.put('cardNo', loginModel.data!.result![0].cardNo);
-      box!.put('city', loginModel.data!.result![0].city);
-      box!.put('accessToken', loginModel.data!.accessToken);
-      box!.put('role', loginModel.data!.result![0].role);
-      box!.put('license', loginModel.data!.result![0].license);
-      box!.put('cardNo', loginModel.data!.result![0].cardNo);
-      box!.put('expiryDate', loginModel.data!.result![0].expiryDate);
+      // box!.put('id', loginModel.data!.result![0].id);
+      // box!.put('name', loginModel.data!.result![0].name);
+      // box!.put('phone', loginModel.data!.result![0].phoneNo);
+      box!.put('phone', event.username);
+      // box!.put('email', loginModel.data!.result![0].email);
+      // box!.put('cardNo', loginModel.data!.result![0].cardNo);
+      // box!.put('city', loginModel.data!.result![0].city);
+      // box!.put('accessToken', loginModel.data!.accessToken);
+      // box!.put('role', loginModel.data!.result![0].role);
+      // box!.put('license', loginModel.data!.result![0].license);
+      // box!.put('cardNo', loginModel.data!.result![0].cardNo);
+      // box!.put('expiryDate', loginModel.data!.result![0].expiryDate);
 
       emit(LoginSuccess());
-      if (loginModel.status == "error") {
-        emit(LoginFailure(error: loginModel.message.toString()));
-      }
+      // if (loginModel.status == "error") {
+      //   emit(LoginFailure(error: loginModel.message.toString()));
+      // }
     } catch (error) {
       emit(LoginFailure(error: error.toString()));
     }

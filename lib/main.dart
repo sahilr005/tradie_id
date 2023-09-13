@@ -10,12 +10,18 @@ import 'package:tradie_id/login/ui/login_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_screen/flutter_secure_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:get/get.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   Hive.registerAdapter(RListAdapter());
   box = await Hive.openBox('tradieId');
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await FlutterSecureScreen.singleton.setAndroidScreenSecure(true);
   ScreenCaptureBlocker.blockScreenCapture();
   runApp(const MyApp());
@@ -40,7 +46,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Staff Id',
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
@@ -54,7 +60,7 @@ class MyApp extends StatelessWidget {
             create: (context) => LoginBloc(),
           )
         ],
-        child: box!.containsKey("name") ? const HomePage() : LoginPage(),
+        child: box!.containsKey("phone") ? const HomePage() : LoginPage(),
       ),
     );
   }

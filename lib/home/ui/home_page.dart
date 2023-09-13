@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tradie_id/config/config.dart';
@@ -17,14 +19,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
-  final List<Widget> _tabs =
-      box!.get("email").toString() != "sahilr96649@gmail.com"
-          ? [const CardListScreen(), const SettingsScreen()]
-          : [
-              const HomeCard(),
-              const InquiryScreen(),
-              const SettingsScreen(),
-            ];
+  final List<Widget> _tabs = box!.get("phone").toString() != "9664922646"
+      ? [const CardListScreen(), const SettingsScreen()]
+      : [
+          const HomeCard(),
+          const InquiryScreen(),
+          const SettingsScreen(),
+        ];
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +43,7 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.home),
             label: 'Home',
           ),
-          if (box!.get("email").toString() == "sahilr96649@gmail.com")
+          if (box!.get("phone").toString() == "9664922646")
             const BottomNavigationBarItem(
               icon: Icon(Icons.info),
               label: 'Inquiry',
@@ -186,7 +187,7 @@ class _HomeCardState extends State<HomeCard> {
               ],
             ),
             const SizedBox(height: 20),
-            if (box!.get("email").toString() == "sahilr96649@gmail.com")
+            if (box!.get("phone").toString() == "9664922646")
               Row(
                 children: [
                   Expanded(
@@ -237,7 +238,7 @@ class _HomeCardState extends State<HomeCard> {
                 ],
               ),
             const SizedBox(height: 20),
-            if (box!.get("email").toString() == "sahilr96649@gmail.com")
+            if (box!.get("phone").toString() == "9664922646")
               Row(
                 children: [
                   Expanded(

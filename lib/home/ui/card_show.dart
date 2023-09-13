@@ -1,19 +1,28 @@
 import 'dart:typed_data';
-
+import 'package:screenshot/screenshot.dart';
 import 'package:slide_digital_clock/slide_digital_clock.dart';
 import 'package:flutter/material.dart';
 import 'package:tradie_id/config/config.dart';
 import 'package:intl/intl.dart';
 import 'package:tradie_id/home/ui/card_list.dart';
+import 'package:photo_view/photo_view.dart';
 
-class CardShow extends StatelessWidget {
+class CardShow extends StatefulWidget {
   final cardData;
   const CardShow({super.key, this.cardData});
 
   @override
+  State<CardShow> createState() => _CardShowState();
+}
+
+class _CardShowState extends State<CardShow> {
+  ScreenshotController screenshotController = ScreenshotController();
+  Uint8List? _imageFile;
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(cardData.name + " - ID Card" ?? " ID Card")),
+      appBar: AppBar(
+          title: Text(widget.cardData.name + " - ID Card" ?? " ID Card")),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Padding(
@@ -42,146 +51,173 @@ class CardShow extends StatelessWidget {
                   ],
                 ),
               const SizedBox(height: 5),
-              Card(
-                elevation: 9.0,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(9),
-                    color: Colors.white,
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Screenshot(
+                controller: screenshotController,
+                child: InkWell(
+                  onTap: () {
+                    screenshotController.capture().then((Uint8List? image) {
+                      //Capture Done
+                      setState(() {
+                        _imageFile = image;
+                      });
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (a) => PhotoV(image: image!),
+                        ),
+                      );
+                    }).catchError((onError) {
+                      print(onError);
+                    });
+                  },
+                  child: Card(
+                    elevation: 9.0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(9),
+                        color: Colors.white,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 16),
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
-                            height: 164,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 164,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    FutureBuilder<List<int>?>(
-                                      future: getCachedImage(
-                                          cardData.companyLogo.toString()),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.connectionState ==
-                                            ConnectionState.waiting) {
-                                          return const CircularProgressIndicator();
-                                        } else if (snapshot.hasData) {
-                                          return Image.memory(
-                                            Uint8List.fromList(snapshot.data!),
-                                            height: 30,
-                                            fit: BoxFit.cover,
-                                          );
-                                        } else {
-                                          return const Text(
-                                              "Image not available");
-                                        }
-                                      },
+                                    Row(
+                                      children: [
+                                        FutureBuilder(
+                                          future: getCachedImage(widget
+                                              .cardData.companyLogo
+                                              .toString()),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.waiting) {
+                                              return const CircularProgressIndicator();
+                                            } else if (snapshot.hasData) {
+                                              dynamic d = snapshot.data!;
+                                              return Image.memory(
+                                                Uint8List.fromList(d),
+                                                height: 30,
+                                                fit: BoxFit.cover,
+                                              );
+                                            } else {
+                                              return const Text(
+                                                  "Image not available");
+                                            }
+                                          },
+                                        ),
+                                        // Image.network(
+                                        //   cardData.companyLogo.toString(),
+                                        //   height: 30,
+                                        // ),
+                                      ],
                                     ),
-                                    // Image.network(
-                                    //   cardData.companyLogo.toString(),
-                                    //   height: 30,
-                                    // ),
+                                    const Spacer(),
+                                    Text(
+                                      widget.cardData.employeName.toString(),
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      widget.cardData.employeRole.toString(),
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      "Ph:${widget.cardData.phoneNo}",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Lic No:${widget.cardData.license}",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
                                   ],
                                 ),
-                                const Spacer(),
-                                Text(
-                                  cardData.employeName.toString(),
-                                  style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  cardData.employeRole.toString(),
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  "Ph:${cardData.phoneNo}",
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    "Card No: ${widget.cardData.cardNo}",
+                                    style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                ),
-                                Text(
-                                  "Lic No:${cardData.license}",
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
+                                  Text(
+                                    "Expiry: ${widget.cardData.expiryDate}",
+                                    style: const TextStyle(color: Colors.black),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                "Card No: ${cardData.companyId}",
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                "Expiry: ${cardData.expiryDate}",
-                                style: const TextStyle(color: Colors.black),
-                              ),
-                              const SizedBox(height: 4),
-                              FutureBuilder<List<int>?>(
-                                future: getCachedImage(
-                                    cardData.profileImage.toString()),
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return const CircularProgressIndicator();
-                                  } else if (snapshot.hasData) {
-                                    return Image.memory(
-                                      Uint8List.fromList(snapshot.data!),
-                                      height: 130,
-                                      width: 90,
-                                      fit: BoxFit.cover,
-                                    );
-                                  } else {
-                                    return Image.asset(
-                                      "assets/no_user.jpg",
-                                      height: 130,
-                                      width: 90,
-                                      fit: BoxFit.cover,
-                                    );
-                                  }
-                                },
-                              ),
-                              // Image.network(
-                              //   cardData.profileImage.toString(),
-                              //   height: 130,
-                              //   width: 90,
-                              // ),
+                                  const SizedBox(height: 4),
+                                  FutureBuilder(
+                                    future: getCachedImage(widget
+                                        .cardData.profileImage
+                                        .toString()),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return const CircularProgressIndicator();
+                                      } else if (snapshot.hasData) {
+                                        dynamic d = snapshot.data!;
+                                        return Image.memory(
+                                          Uint8List.fromList(d),
+                                          height: 130,
+                                          width: 90,
+                                          fit: BoxFit.cover,
+                                        );
+                                      } else {
+                                        return Image.asset(
+                                          "assets/no_user.jpg",
+                                          height: 130,
+                                          width: 90,
+                                          fit: BoxFit.cover,
+                                        );
+                                      }
+                                    },
+                                  ),
+                                  // Image.network(
+                                  //   cardData.profileImage.toString(),
+                                  //   height: 130,
+                                  //   width: 90,
+                                  // ),
 
-                              // Image.network(
-                              //   cardData.companyLogo!,
-                              //   fit: BoxFit.cover,
-                              //   height: 130,
-                              //   width: 90,
-                              // ),
+                                  // Image.network(
+                                  //   cardData.companyLogo!,
+                                  //   fit: BoxFit.cover,
+                                  //   height: 130,
+                                  //   width: 90,
+                                  // ),
+                                ],
+                              ),
                             ],
                           ),
+                          if (widget.cardData.description != null)
+                            const Divider(
+                                height: 14,
+                                color: Colors.blueGrey,
+                                thickness: .1),
+                          if (widget.cardData.description != null)
+                            Text(
+                              widget.cardData.description ?? "",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            )
                         ],
                       ),
-                      if (cardData.description != null)
-                        const Divider(
-                            height: 14, color: Colors.blueGrey, thickness: .1),
-                      if (cardData.description != null)
-                        Text(
-                          cardData.description ?? "",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        )
-                    ],
+                    ),
                   ),
                 ),
               ),
@@ -203,6 +239,7 @@ class CardShow extends StatelessWidget {
                       .titleMedium!
                       .copyWith(color: Colors.black),
                 ),
+                showSecondsDigit: true,
               ),
               Card(
                 elevation: 9.0,
@@ -251,6 +288,32 @@ class CardShow extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class PhotoV extends StatefulWidget {
+  final Uint8List image;
+  const PhotoV({super.key, required this.image});
+
+  @override
+  State<PhotoV> createState() => _PhotoVState();
+}
+
+class _PhotoVState extends State<PhotoV> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.arrow_back_ios)),
+      ),
+      body: PhotoView(
+        imageProvider: MemoryImage(widget.image),
       ),
     );
   }

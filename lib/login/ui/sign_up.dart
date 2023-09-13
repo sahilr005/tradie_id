@@ -1,16 +1,14 @@
 import 'dart:developer';
-import 'package:lottie/lottie.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:tradie_id/config/config.dart';
+import 'package:lottie/lottie.dart';
+import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-
-import 'package:tradie_id/home/ui/home_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tradie_id/login/ui/otp_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -20,16 +18,18 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
-  // final TextEditingController licenseController = TextEditingController();
-  final TextEditingController roleController = TextEditingController();
+  final TextEditingController countryCodeController =
+      TextEditingController(text: "+61");
+  final TextEditingController conformController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   File? _image;
   String? _base64Image;
 
-  Future getImage() async {
+  getImage() async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
 
@@ -66,36 +66,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Center(
-                //   child: Column(
-                //     mainAxisAlignment: MainAxisAlignment.center,
-                //     children: <Widget>[
-                //       const SizedBox(height: 20),
-                //       _base64Image == null
-                //           ? InkWell(
-                //               onTap: () {
-                //                 getImage();
-                //               },
-                //               child: Container(
-                //                 decoration: BoxDecoration(
-                //                   shape: BoxShape.circle,
-                //                   color: Colors.grey.shade300,
-                //                 ),
-                //                 padding: const EdgeInsets.all(30),
-                //                 alignment: Alignment.center,
-                //                 child: const Icon(Icons.add_a_photo),
-                //               ),
-                //             )
-                //           : InkWell(
-                //               onTap: () {
-                //                 getImage();
-                //               },
-                //               child: Image.memory(base64Decode(_base64Image!),
-                //                   height: 200),
-                //             ),
-                //     ],
-                //   ),
-                // ),
                 Lottie.asset('assets/json/login.json',
                     height: MediaQuery.of(context).size.height * .4),
                 const SizedBox(height: 20),
@@ -131,11 +101,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(height: 16.0),
                 TextFormField(
                   controller: phoneController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Phone No.',
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
+                    prefixIcon: CountryCodePicker(
+                      onChanged: (value) {
+                        countryCodeController.text = value.dialCode!;
+                        setState(() {});
+                      },
+                      initialSelection: '+61',
+                      favorite: const ['+61', '+91'],
+                      showCountryOnly: false,
+                      showOnlyCountryWhenClosed: false,
+                      alignLeft: false,
+                    ),
                   ),
-                  maxLength: 13,
+                  maxLength: 10,
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -144,23 +125,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     // You can add more specific phone number validation here
                     return null;
                   },
-                ),
-
-                const SizedBox(height: 16.0),
-                // TextField(
-                //   controller: licenseController,
-                //   decoration: const InputDecoration(
-                //     labelText: 'License No.',
-                //     border: OutlineInputBorder(),
-                //   ),
-                // ),
-                // const SizedBox(height: 16.0),
-                TextField(
-                  controller: roleController,
-                  decoration: const InputDecoration(
-                    labelText: 'Role',
-                    border: OutlineInputBorder(),
-                  ),
                 ),
                 const SizedBox(height: 16.0),
                 TextFormField(
@@ -178,50 +142,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     return null;
                   },
                 ),
+                const SizedBox(height: 16.0),
+                TextFormField(
+                  controller: conformController,
+                  decoration: const InputDecoration(
+                    labelText: 'Confirm Password',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.visiblePassword,
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please confirm your Password';
+                    }
+                    if (value != passwordController.text) {
+                      return 'Passwords do not match';
+                    }
+                    return null;
+                  },
+                ),
                 const SizedBox(height: 24.0),
                 ElevatedButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      EasyLoading.show();
-                      try {
-                        Response? res = await dio.post(
-                          "http://68.178.163.90:4500/api/employe/register",
-                          data: {
-                            "name": usernameController.text,
-                            "email": emailController.text,
-                            "phone_no": phoneController.text,
-                            "role": roleController.text,
-                            "license": "",
-                            "city": "",
-                            "state": "",
-                            "country": "",
-                            "description": "",
-                            "profileImage": _base64Image ?? "",
-                            "password": passwordController.text
-                          },
-                        );
-
-                        log(res.data.toString());
-                        EasyLoading.dismiss();
-                        if (res.data["status"] == "error") {
-                          Fluttertoast.showToast(
-                            msg: res.data["data"]["message"].toString(),
-                            toastLength: Toast.LENGTH_LONG,
-                          );
-                        } else {
-                          box!.put('name', usernameController.text);
-                          box!.put('phone', phoneController.text);
-                          box!.put('email', emailController.text);
-                          // ignore: use_build_context_synchronously
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (a) => const HomePage()),
-                              (route) => false);
-                        }
-                      } catch (e) {
-                        EasyLoading.dismiss();
-                      }
+                      signInWithPhone(context,
+                          countryCodeController.text + phoneController.text);
                     }
                   },
                   child: const Text('Sign Up'),
@@ -232,5 +177,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  // signin
+  void signInWithPhone(BuildContext context, String phoneNumber) async {
+    try {
+      await _firebaseAuth.verifyPhoneNumber(
+          phoneNumber: phoneNumber,
+          verificationCompleted:
+              (PhoneAuthCredential phoneAuthCredential) async {
+            await _firebaseAuth.signInWithCredential(phoneAuthCredential);
+          },
+          verificationFailed: (error) {
+            Fluttertoast.showToast(
+                msg: error.message.toString(), toastLength: Toast.LENGTH_LONG);
+            throw Exception(error.message);
+          },
+          codeSent: (verificationId, forceResendingToken) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (a) => VerifyOtpScreen(
+                  fromLogin: false,
+                  verificationId: verificationId,
+                  onlyNumber: phoneController.text,
+                  email: emailController.text,
+                  name: usernameController.text,
+                  password: passwordController.text,
+                  phoneNo: countryCodeController.text + phoneController.text,
+                ),
+              ),
+            );
+          },
+          codeAutoRetrievalTimeout: (verificationId) {});
+    } on FirebaseAuthException catch (e) {
+      log(e.message.toString());
+      Fluttertoast.showToast(
+          msg: e.message.toString(), toastLength: Toast.LENGTH_LONG);
+    }
   }
 }

@@ -6,7 +6,9 @@ import 'package:tradie_id/profile/profile_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
+  const SettingsScreen({
+    super.key,
+  });
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -39,7 +41,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       color: Colors.green,
                     )),
               ),
-              if (box!.get("email").toString() == "sahilr96649@gmail.com")
+              if (box!.get("phone").toString() == "9664922646")
                 Card(
                   child: ListTile(
                     onTap: () async {
@@ -69,7 +71,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
               ),
-              if (box!.get("email").toString() == "sahilr96649@gmail.com")
+              if (box!.get("phone").toString() == "9664922646")
                 Card(
                   child: ListTile(
                     onTap: () {
@@ -82,20 +84,50 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                 ),
-              Card(
-                child: ListTile(
-                  onTap: () {
-                    showLogoutDialog(context, false);
-                  },
-                  title: const Text("Log out"),
-                  trailing: Icon(
-                    Icons.logout,
-                    color: Colors.red.shade800,
+              if (box!.get("phone").toString() == "9664922646")
+                Card(
+                  child: ListTile(
+                    onTap: () {
+                      showLogoutDialog(context, false);
+                    },
+                    title: const Text("Log out"),
+                    trailing: Icon(
+                      Icons.logout,
+                      color: Colors.red.shade800,
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            InkWell(
+              onTap: () async {
+                var url = "https://esofttechnologies.com.au/";
+                if (!await launchUrl(Uri.parse(url))) {
+                  throw Exception('Could not launch $url');
+                }
+              },
+              child: RichText(
+                text: const TextSpan(
+                    text: "Powered by ",
+                    style: TextStyle(color: Colors.grey),
+                    children: [
+                      TextSpan(
+                        text: "E-soft Technologies",
+                        style: TextStyle(
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline),
+                      ),
+                    ]),
+              ),
+            ),
+          ],
         ),
       ),
     );
