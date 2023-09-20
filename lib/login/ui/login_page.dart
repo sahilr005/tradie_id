@@ -179,7 +179,7 @@ class LoginForm extends StatelessWidget {
               phoneNumber: phoneNumber,
               verificationCompleted:
                   (PhoneAuthCredential phoneAuthCredential) async {
-                await _firebaseAuth.signInWithCredential(phoneAuthCredential);
+                // await _firebaseAuth.signInWithCredential(phoneAuthCredential);
                 EasyLoading.dismiss();
               },
               verificationFailed: (error) {

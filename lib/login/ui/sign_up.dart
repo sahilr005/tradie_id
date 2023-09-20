@@ -81,7 +81,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     }
                     return null;
                   },
-                ),
+                ),  
                 const SizedBox(height: 16.0),
                 TextFormField(
                   controller: emailController,
@@ -186,7 +186,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           phoneNumber: phoneNumber,
           verificationCompleted:
               (PhoneAuthCredential phoneAuthCredential) async {
-            await _firebaseAuth.signInWithCredential(phoneAuthCredential);
+            // await _firebaseAuth.signInWithCredential(phoneAuthCredential);
           },
           verificationFailed: (error) {
             Fluttertoast.showToast(
