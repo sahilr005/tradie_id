@@ -70,154 +70,164 @@ class _CardShowState extends State<CardShow> {
                       print(onError);
                     });
                   },
-                  child: Card(
-                    elevation: 9.0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(9),
-                        color: Colors.white,
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 16, horizontal: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Stack(
+                    children: [
+                      Card(
+                        elevation: 9.0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(9),
+                            color: Colors.white,
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 16, horizontal: 16),
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(
-                                height: 164,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: 164,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        FutureBuilder(
-                                          future: getCachedImage(widget
-                                              .cardData.companyLogo
-                                              .toString()),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.connectionState ==
-                                                ConnectionState.waiting) {
-                                              return const CircularProgressIndicator();
-                                            } else if (snapshot.hasData) {
-                                              dynamic d = snapshot.data!;
-                                              return Image.memory(
-                                                Uint8List.fromList(d),
-                                                height: 30,
-                                                fit: BoxFit.cover,
-                                              );
-                                            } else {
-                                              return const Text(
-                                                  "Image not available");
-                                            }
-                                          },
+                                        const Row(
+                                          children: [
+                                            // Image.network(
+                                            //   cardData.companyLogo.toString(),
+                                            //   height: 30,
+                                            // ),
+                                          ],
                                         ),
-                                        // Image.network(
-                                        //   cardData.companyLogo.toString(),
-                                        //   height: 30,
-                                        // ),
+                                        const Spacer(),
+                                        Text(
+                                          widget.cardData.employeName
+                                              .toString(),
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          widget.cardData.employeRole
+                                              .toString(),
+                                          style: const TextStyle(fontSize: 16),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Text(
+                                          "Ph:${widget.cardData.phoneNo}",
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        Text(
+                                          "Lic No:${widget.cardData.license}",
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
                                       ],
                                     ),
-                                    const Spacer(),
-                                    Text(
-                                      widget.cardData.employeName.toString(),
-                                      style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      widget.cardData.employeRole.toString(),
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Text(
-                                      "Ph:${widget.cardData.phoneNo}",
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        "Card No: ${widget.cardData.cardNo}",
+                                        style: const TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold),
                                       ),
-                                    ),
-                                    Text(
-                                      "Lic No:${widget.cardData.license}",
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
+                                      // Text(
+                                      //   "Expiry: ${widget.cardData.expiryDate}",
+                                      //   style: const TextStyle(
+                                      //       color: Colors.black),
+                                      // ),
+                                      const SizedBox(height: 4),
+                                      FutureBuilder(
+                                        future: getCachedImage(widget
+                                            .cardData.profileImage
+                                            .toString()),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return const CircularProgressIndicator();
+                                          } else if (snapshot.hasData) {
+                                            dynamic d = snapshot.data!;
+                                            return Image.memory(
+                                              Uint8List.fromList(d),
+                                              height: 130,
+                                              
+                                              fit: BoxFit.fill,
+                                            );
+                                          } else {
+                                            return Image.asset(
+                                              "assets/no_user.jpg",
+                                              height: 130,
+                                              width: 90,
+                                              fit: BoxFit.cover,
+                                            );
+                                          }
+                                        },
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    "Card No: ${widget.cardData.cardNo}",
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    "Expiry: ${widget.cardData.expiryDate}",
-                                    style: const TextStyle(color: Colors.black),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  FutureBuilder(
-                                    future: getCachedImage(widget
-                                        .cardData.profileImage
-                                        .toString()),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return const CircularProgressIndicator();
-                                      } else if (snapshot.hasData) {
-                                        dynamic d = snapshot.data!;
-                                        return Image.memory(
-                                          Uint8List.fromList(d),
-                                          height: 130,
-                                          width: 90,
-                                          fit: BoxFit.cover,
-                                        );
-                                      } else {
-                                        return Image.asset(
-                                          "assets/no_user.jpg",
-                                          height: 130,
-                                          width: 90,
-                                          fit: BoxFit.cover,
-                                        );
-                                      }
-                                    },
-                                  ),
-                                  // Image.network(
-                                  //   cardData.profileImage.toString(),
-                                  //   height: 130,
-                                  //   width: 90,
-                                  // ),
+                                      // Image.network(
+                                      //   cardData.profileImage.toString(),
+                                      //   height: 130,
+                                      //   width: 90,
+                                      // ),
 
-                                  // Image.network(
-                                  //   cardData.companyLogo!,
-                                  //   fit: BoxFit.cover,
-                                  //   height: 130,
-                                  //   width: 90,
-                                  // ),
+                                      // Image.network(
+                                      //   cardData.companyLogo!,
+                                      //   fit: BoxFit.cover,
+                                      //   height: 130,
+                                      //   width: 90,
+                                      // ),
+                                    ],
+                                  ),
                                 ],
                               ),
+                              const Divider(
+                                  height: 14,
+                                  color: Colors.blueGrey,
+                                  thickness: .1),
+                              Text(
+                                "Contractor/Employee on behalf of ${widget.cardData.name}",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12,
+                                ),
+                              )
                             ],
                           ),
-                          if (widget.cardData.description != null)
-                            const Divider(
-                                height: 14,
-                                color: Colors.blueGrey,
-                                thickness: .1),
-                          if (widget.cardData.description != null)
-                            Text(
-                              widget.cardData.description ?? "",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            )
-                        ],
+                        ),
                       ),
-                    ),
+                      Positioned(
+                        left: 4,
+                        top: 4,
+                        child: FutureBuilder(
+                          future: getCachedImage(
+                              widget.cardData.companyLogo.toString()),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasData) {
+                              dynamic d = snapshot.data!;
+                              return Image.memory(
+                                Uint8List.fromList(d),
+                                height: 70,
+                                fit: BoxFit.cover,
+                              );
+                            } else {
+                              return const Text("Image not available");
+                            }
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -263,7 +273,7 @@ class _CardShowState extends State<CardShow> {
                         children: [
                           Image.asset("assets/logo.png", width: 90),
                           Image.asset("assets/sgch-logo.png", width: 90),
-                          Image.asset("assets/women.png", width: 90),
+                          // Image.asset("assets/women.png", width: 90),
                         ],
                       ),
                       const SizedBox(height: 15),

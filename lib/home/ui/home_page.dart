@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tradie_id/config/config.dart';
@@ -9,6 +10,44 @@ import 'package:tradie_id/home/ui/job_appiaction.dart';
 import 'package:tradie_id/home/ui/job_list.dart';
 import 'package:tradie_id/home/ui/my_review.dart';
 import 'package:tradie_id/home/ui/settings.dart';
+import 'package:tradie_id/model/company_list_model.dart';
+
+apiCall() async {
+  try {
+    Response res = await Dio()
+        .post("http://68.178.163.90:4500/api/employe/companyList", data: {
+      "phone_no": box!.get("phone").toString().contains("+")
+          ? box!.get("phone").toString().replaceRange(0, 3, "")
+          : box!.get("phone").toString()
+    });
+    // log(box!.get("phone").toString());
+    // log(res.data.toString());
+
+    CompanyListModel data = CompanyListModel.fromJson(res.data);
+
+    // Cache image data for each company
+    try {
+      for (var i = 0; i < data.result!.list!.length; i++) {
+        final companyLogoUrl = data.result!.list![i].companyLogo.toString();
+        final profileImageUrl = data.result!.list![i].profileImage.toString();
+        if (companyLogoUrl.isNotEmpty || companyLogoUrl != "") {
+          await cacheImage(companyLogoUrl);
+        }
+        if (profileImageUrl.isNotEmpty || profileImageUrl != "") {
+          await cacheImage(profileImageUrl);
+        }
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+
+    box!.put("cardList", data.result!.list!);
+    box!.put("lastTime", DateTime.now());
+  } catch (e) {
+    Fluttertoast.showToast(msg: "You are offline");
+  }
+  // log(data.result!.list.toString());
+}
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,13 +58,19 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
-  final List<Widget> _tabs = box!.get("phone").toString() != "9664922646"
+  final List<Widget> _tabs = box!.get("phone").toString() != "8905671058"
       ? [const CardListScreen(), const SettingsScreen()]
       : [
           const HomeCard(),
           const InquiryScreen(),
           const SettingsScreen(),
         ];
+
+  @override
+  void initState() {
+    apiCall();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +88,7 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.home),
             label: 'Home',
           ),
-          if (box!.get("phone").toString() == "9664922646")
+          if (box!.get("phone").toString() == "8905671058")
             const BottomNavigationBarItem(
               icon: Icon(Icons.info),
               label: 'Inquiry',
@@ -187,7 +232,7 @@ class _HomeCardState extends State<HomeCard> {
               ],
             ),
             const SizedBox(height: 20),
-            if (box!.get("phone").toString() == "9664922646")
+            if (box!.get("phone").toString() == "8905671058")
               Row(
                 children: [
                   Expanded(
@@ -238,7 +283,7 @@ class _HomeCardState extends State<HomeCard> {
                 ],
               ),
             const SizedBox(height: 20),
-            if (box!.get("phone").toString() == "9664922646")
+            if (box!.get("phone").toString() == "8905671058")
               Row(
                 children: [
                   Expanded(

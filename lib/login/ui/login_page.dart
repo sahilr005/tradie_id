@@ -134,10 +134,14 @@ class LoginForm extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 signInWithPhone(
-                    onlyNumber: usernameController.text,
+                    onlyNumber: usernameController.text.length == 9
+                        ? "0${usernameController.text}"
+                        : usernameController.text,
                     context: context,
-                    phoneNumber:
-                        countryCodeController.text + usernameController.text);
+                    phoneNumber: countryCodeController.text +
+                        (usernameController.text.length == 9
+                            ? "0${usernameController.text}"
+                            : usernameController.text));
                 // final username = usernameController.text;
                 // final password = passwordController.text;
                 // loginBloc.add(
@@ -201,7 +205,6 @@ class LoginForm extends StatelessWidget {
                               verificationId: verificationId,
                               email: "",
                               name: "",
-                              password: "",
                               phoneNo: phoneNumber,
                             )));
               },

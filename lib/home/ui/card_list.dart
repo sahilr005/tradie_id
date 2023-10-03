@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart' as gt;
 import 'package:tradie_id/config/config.dart';
 import 'package:tradie_id/home/ui/card_show.dart';
+import 'package:tradie_id/home/ui/home_page.dart';
 import 'package:tradie_id/model/company_list_model.dart';
 
 import 'package:hive/hive.dart';
@@ -46,57 +46,19 @@ cacheImage(String imageUrl) async {
 }
 
 class CardListScreen extends StatefulWidget {
-  const CardListScreen({super.key});
+  const CardListScreen({
+    super.key,
+  });
 
   @override
   State<CardListScreen> createState() => _CardListState();
 }
 
 class _CardListState extends State<CardListScreen> {
-  List? r;
-  apiCall() async {
-    try {
-      Response res = await Dio()
-          .post("http://68.178.163.90:4500/api/employe/companyList", data: {
-        "phone_no": box!.get("phone").toString().contains("+")
-            ? box!.get("phone").toString().replaceRange(0, 3, "")
-            : box!.get("phone").toString()
-      });
-      // log(box!.get("phone").toString());
-      // log(res.data.toString());
-
-      CompanyListModel data = CompanyListModel.fromJson(res.data);
-
-      // Cache image data for each company
-      try {
-        for (var i = 0; i < data.result!.list!.length; i++) {
-          final companyLogoUrl = data.result!.list![i].companyLogo.toString();
-          final profileImageUrl = data.result!.list![i].profileImage.toString();
-          if (companyLogoUrl.isNotEmpty || companyLogoUrl != "") {
-            await cacheImage(companyLogoUrl);
-          }
-          if (profileImageUrl.isNotEmpty || profileImageUrl != "") {
-            await cacheImage(profileImageUrl);
-          }
-        }
-      } catch (e) {
-        log(e.toString());
-      }
-
-      box!.put("cardList", data.result!.list!);
-      box!.put("lastTime", DateTime.now());
-    } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("You are offline")));
-    }
-    r = box!.get("cardList");
-    // log(data.result!.list.toString());
-    setState(() {});
-  }
+  List? r = box!.get("cardList");
 
   @override
   void initState() {
-    apiCall();
     super.initState();
   }
 
@@ -111,13 +73,13 @@ class _CardListState extends State<CardListScreen> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (box!.get("phone").toString() == "9664922646")
+              if (box!.get("phone").toString() == "8905671058")
                 InkWell(
                     onTap: () {
                       gt.Get.back();
                     },
                     child: const Icon(Icons.arrow_back_ios)),
-              if (box!.get("phone").toString() != "9664922646")
+              if (box!.get("phone").toString() != "8905671058")
                 ClipRRect(
                     borderRadius: BorderRadius.circular(30),
                     child: Image.asset(
@@ -202,81 +164,93 @@ class _CardListState extends State<CardListScreen> {
                                                 BorderRadius.circular(9),
                                             color: Colors.white,
                                           ),
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 16, horizontal: 16),
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                              Stack(
                                                 children: [
-                                                  FutureBuilder(
-                                                    future: getCachedImage(
-                                                        cardData.companyLogo
-                                                            .toString()),
-                                                    builder:
-                                                        (context, snapshot) {
-                                                      if (snapshot
-                                                              .connectionState ==
-                                                          ConnectionState
-                                                              .waiting) {
-                                                        return const CircularProgressIndicator();
-                                                      } else if (snapshot
-                                                              .hasData &&
-                                                          snapshot.data !=
-                                                              null) {
-                                                        dynamic d =
-                                                            snapshot.data!;
-                                                        return Image.memory(
-                                                          Uint8List.fromList(d),
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.2,
-                                                          fit: BoxFit.cover,
-                                                        );
-                                                      } else {
-                                                        return const Text(
-                                                            "Image not available");
-                                                      }
-                                                    },
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        vertical: 8,
+                                                        horizontal: 16),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        // Image.network(
+                                                        //   cardData.companyLogo.toString(),
+                                                        //   width:
+                                                        //       MediaQuery.of(context).size.width *
+                                                        //           .2,
+                                                        //   fit: BoxFit.cover,
+                                                        // ),
+                                                        Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .end,
+                                                          children: [
+                                                            Text(
+                                                              "Phone : ${cardData.phoneNo}",
+                                                              style: const TextStyle(
+                                                                  fontSize: 14,
+                                                                  color: Colors
+                                                                      .black),
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 5),
+                                                            Text(
+                                                              "license No. ${cardData.license}",
+                                                              style:
+                                                                  const TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: 16,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
-
-                                                  // Image.network(
-                                                  //   cardData.companyLogo.toString(),
-                                                  //   width:
-                                                  //       MediaQuery.of(context).size.width *
-                                                  //           .2,
-                                                  //   fit: BoxFit.cover,
-                                                  // ),
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.end,
-                                                    children: [
-                                                      Text(
-                                                        "#${cardData.license}",
-                                                        style: const TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                      const SizedBox(height: 5),
-                                                      Text(
-                                                        "Expiry: ${cardData.expiryDate}",
-                                                        style: const TextStyle(
-                                                            fontSize: 14,
-                                                            color:
-                                                                Colors.black),
-                                                      ),
-                                                    ],
+                                                  Positioned(
+                                                    child: FutureBuilder(
+                                                      future: getCachedImage(
+                                                          cardData.companyLogo
+                                                              .toString()),
+                                                      builder:
+                                                          (context, snapshot) {
+                                                        if (snapshot
+                                                                .connectionState ==
+                                                            ConnectionState
+                                                                .waiting) {
+                                                          return const CircularProgressIndicator();
+                                                        } else if (snapshot
+                                                                .hasData &&
+                                                            snapshot.data !=
+                                                                null) {
+                                                          dynamic d =
+                                                              snapshot.data!;
+                                                          return Image.memory(
+                                                            Uint8List.fromList(
+                                                                d),
+                                                            width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.3,
+                                                            fit: BoxFit.cover,
+                                                          );
+                                                        } else {
+                                                          return const Text(
+                                                              "Image not available");
+                                                        }
+                                                      },
+                                                    ),
                                                   ),
                                                 ],
                                               ),
@@ -285,11 +259,14 @@ class _CardListState extends State<CardListScreen> {
                                                   height: 14,
                                                   color: Colors.blueGrey,
                                                   thickness: .1),
-                                              const SizedBox(height: 5),
-                                              Text(
-                                                cardData.name ?? "",
-                                                style: const TextStyle(
-                                                  fontWeight: FontWeight.w600,
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  cardData.name ?? "",
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
                                                 ),
                                               )
                                             ],

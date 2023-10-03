@@ -52,7 +52,6 @@ class RList {
   String? employeEmail;
   String? employeRole;
   String? cardNo;
-  String? expiryDate;
   String? license;
   String? profileImage;
   int? companyId;
@@ -76,7 +75,7 @@ class RList {
       this.employeEmail,
       this.employeRole,
       this.cardNo,
-      this.expiryDate,
+
       this.license,
       this.profileImage,
       this.companyId,
@@ -100,7 +99,7 @@ class RList {
     employeEmail = json['employeEmail'];
     employeRole = json['employeRole'];
     cardNo = json['card_no'];
-    expiryDate = json['expiry_date'];
+
     license = json['license'];
     profileImage = json['profileImage'];
     companyId = json['company_id'];
@@ -126,7 +125,7 @@ class RList {
     data['employeEmail'] = this.employeEmail;
     data['employeRole'] = this.employeRole;
     data['card_no'] = this.cardNo;
-    data['expiry_date'] = this.expiryDate;
+
     data['license'] = this.license;
     data['profileImage'] = this.profileImage;
     data['company_id'] = this.companyId;

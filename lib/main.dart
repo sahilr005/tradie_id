@@ -11,6 +11,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_screen/flutter_secure_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:upgrader/upgrader.dart';
 import 'firebase_options.dart';
 import 'package:get/get.dart';
 
@@ -54,13 +55,19 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       builder: EasyLoading.init(),
-      home: MultiBlocProvider(
-        providers: [
-          BlocProvider<LoginBloc>(
-            create: (context) => LoginBloc(),
-          )
-        ],
-        child: box!.containsKey("phone") ? const HomePage() : LoginPage(),
+      home: UpgradeAlert(
+        upgrader: Upgrader(
+          showIgnore: false,
+          showLater: false,
+        ),
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider<LoginBloc>(
+              create: (context) => LoginBloc(),
+            )
+          ],
+          child: box!.containsKey("phone") ? const HomePage() : LoginPage(),
+        ),
       ),
     );
   }

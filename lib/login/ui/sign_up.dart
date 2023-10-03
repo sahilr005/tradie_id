@@ -25,7 +25,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController countryCodeController =
       TextEditingController(text: "+61");
   final TextEditingController conformController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  // final TextEditingController passwordController = TextEditingController();
   File? _image;
   String? _base64Image;
 
@@ -81,7 +81,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     }
                     return null;
                   },
-                ),  
+                ),
                 const SizedBox(height: 16.0),
                 TextFormField(
                   controller: emailController,
@@ -127,41 +127,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   },
                 ),
                 const SizedBox(height: 16.0),
-                TextFormField(
-                  controller: passwordController,
-                  decoration: const InputDecoration(
-                    labelText: 'Password',
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.visiblePassword,
-                  obscureText: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your Password';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16.0),
-                TextFormField(
-                  controller: conformController,
-                  decoration: const InputDecoration(
-                    labelText: 'Confirm Password',
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.visiblePassword,
-                  obscureText: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please confirm your Password';
-                    }
-                    if (value != passwordController.text) {
-                      return 'Passwords do not match';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 24.0),
+                // TextFormField(
+                //   controller: passwordController,
+                //   decoration: const InputDecoration(
+                //     labelText: 'Password',
+                //     border: OutlineInputBorder(),
+                //   ),
+                //   keyboardType: TextInputType.visiblePassword,
+                //   obscureText: true,
+                //   validator: (value) {
+                //     if (value == null || value.isEmpty) {
+                //       return 'Please enter your Password';
+                //     }
+                //     return null;
+                //   },
+                // ),
+                // const SizedBox(height: 16.0),
+                // TextFormField(
+                //   controller: conformController,
+                //   decoration: const InputDecoration(
+                //     labelText: 'Confirm Password',
+                //     border: OutlineInputBorder(),
+                //   ),
+                //   keyboardType: TextInputType.visiblePassword,
+                //   obscureText: true,
+                //   validator: (value) {
+                //     if (value == null || value.isEmpty) {
+                //       return 'Please confirm your Password';
+                //     }
+                //     if (value != passwordController.text) {
+                //       return 'Passwords do not match';
+                //     }
+                //     return null;
+                //   },
+                // ),
+                // const SizedBox(height: 24.0),
                 ElevatedButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
@@ -203,7 +203,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   onlyNumber: phoneController.text,
                   email: emailController.text,
                   name: usernameController.text,
-                  password: passwordController.text,
+                  // password: passwordController.text,
                   phoneNo: countryCodeController.text + phoneController.text,
                 ),
               ),

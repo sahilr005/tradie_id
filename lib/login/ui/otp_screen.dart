@@ -9,7 +9,7 @@ import 'package:tradie_id/config/config.dart';
 import 'package:tradie_id/home/ui/home_page.dart';
 
 class VerifyOtpScreen extends StatefulWidget {
-  final String name, email, phoneNo, password, verificationId, onlyNumber;
+  final String name, email, phoneNo, verificationId, onlyNumber;
   final bool fromLogin;
   const VerifyOtpScreen(
       {super.key,
@@ -17,7 +17,6 @@ class VerifyOtpScreen extends StatefulWidget {
       required this.email,
       required this.onlyNumber,
       required this.phoneNo,
-      required this.password,
       required this.verificationId,
       required this.fromLogin});
 
@@ -123,8 +122,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
               data: {
                 "name": widget.name,
                 "email": widget.email,
-                "phone_no": widget.phoneNo,
-                "password": widget.password,
+                "phone_no": widget.phoneNo
               },
             );
 

@@ -41,7 +41,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       color: Colors.green,
                     )),
               ),
-              if (box!.get("phone").toString() == "9664922646")
+              if (box!.get("phone").toString() == "8905671058")
                 Card(
                   child: ListTile(
                     onTap: () async {
@@ -71,7 +71,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
               ),
-              if (box!.get("phone").toString() == "9664922646")
+              if (box!.get("phone").toString() == "8905671058")
                 Card(
                   child: ListTile(
                     onTap: () {
@@ -84,7 +84,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                 ),
-              if (box!.get("phone").toString() == "9664922646")
+              if (box!.get("phone").toString() == "8905671058")
                 Card(
                   child: ListTile(
                     onTap: () {
