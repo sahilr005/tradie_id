@@ -43,6 +43,8 @@ apiCall() async {
 
     box!.put("cardList", data.result!.list!);
     box!.put("lastTime", DateTime.now());
+    globleCardData!.value = box!.get("cardList");
+    log("Api Call  ");
   } catch (e) {
     Fluttertoast.showToast(msg: "You are offline");
   }
@@ -69,6 +71,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     apiCall();
+    setState(() {});
     super.initState();
   }
 

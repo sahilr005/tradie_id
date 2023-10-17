@@ -203,7 +203,6 @@ class LoginForm extends StatelessWidget {
                               fromLogin: true,
                               onlyNumber: onlyNumber,
                               verificationId: verificationId,
-                              email: "",
                               name: "",
                               phoneNo: phoneNumber,
                             )));

@@ -20,8 +20,8 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController firstNameControllers = TextEditingController(
       text: box!.containsKey("name") ? box!.get("name").toString() : "");
 
-  TextEditingController emailControllers = TextEditingController(
-      text: box!.containsKey("email") ? box!.get("email").toString() : "");
+  TextEditingController phoneControllers = TextEditingController(
+      text: box!.containsKey("phone") ? box!.get("phone").toString() : "");
 
   String? _imagePath;
 
@@ -123,16 +123,17 @@ class _ProfilePageState extends State<ProfilePage> {
                       const SizedBox(height: 15),
                       TextFormField(
                         decoration: const InputDecoration(
-                            labelText: 'Email', border: OutlineInputBorder()),
-                        controller: emailControllers,
+                            labelText: 'Phone', border: OutlineInputBorder()),
+                        controller: phoneControllers,
                         keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.done,
-                        validator: (String? value) {
-                          if (value!.isEmpty) {
-                            return 'Enter Email';
-                          }
-                          return null;
-                        },
+                        readOnly: true,
+                        // validator: (String? value) {
+                        //   if (value!.isEmpty) {
+                        //     return 'Enter Email';
+                        //   }
+                        //   return null;
+                        // },
                       ),
                       const SizedBox(height: 15),
                     ],
@@ -155,7 +156,7 @@ class _ProfilePageState extends State<ProfilePage> {
         child: ElevatedButton(
             onPressed: () {
               box!.put("name", firstNameControllers.text.toString());
-              box!.put("email", emailControllers.text.toString());
+              box!.put("phone", phoneControllers.text.toString());
               Fluttertoast.showToast(msg: "Profile Updated");
               setState(() {});
             },

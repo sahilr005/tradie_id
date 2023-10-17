@@ -9,12 +9,11 @@ import 'package:tradie_id/config/config.dart';
 import 'package:tradie_id/home/ui/home_page.dart';
 
 class VerifyOtpScreen extends StatefulWidget {
-  final String name, email, phoneNo, verificationId, onlyNumber;
+  final String name, phoneNo, verificationId, onlyNumber;
   final bool fromLogin;
   const VerifyOtpScreen(
       {super.key,
       required this.name,
-      required this.email,
       required this.onlyNumber,
       required this.phoneNo,
       required this.verificationId,
@@ -119,14 +118,10 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
           try {
             Response? res = await dio.post(
               "http://68.178.163.90:4500/api/employe/register",
-              data: {
-                "name": widget.name,
-                "email": widget.email,
-                "phone_no": widget.phoneNo
-              },
+              data: {"name": widget.name, "phone_no": widget.onlyNumber},
             );
 
-            log(res.data.toString());
+            log(res!.data.toString());
             EasyLoading.dismiss();
             if (res.data["status"] == "error") {
               Fluttertoast.showToast(
@@ -137,7 +132,6 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
               box!.put('phone', widget.onlyNumber);
               box!.put('name', widget.name);
               box!.put('phone', widget.phoneNo);
-              box!.put('email', widget.email);
               // ignore: use_build_context_synchronously
               Navigator.pushAndRemoveUntil(
                   context,

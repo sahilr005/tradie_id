@@ -47,30 +47,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     onTap: () async {
                       try {
                         !await launchUrl(Uri.parse(
-                            "https://esofttechnologies.com.au/portfolio.html"));
+                            "https://esofttechnologies.com.au/tradie-id.html"));
                       } catch (e) {}
                     },
                     title: const Text("Our Services"),
                     trailing: const Icon(Icons.sensors_rounded),
                   ),
                 ),
-              Card(
-                child: ListTile(
-                  onTap: () {
-                    showAboutDialog(
-                      context: context,
-                      applicationLegalese: "Tradie ID Legalese",
-                      applicationName: "Tradie ID",
-                      applicationVersion: "1.0.0+10",
-                    );
-                  },
-                  title: const Text("About Tradie ID"),
-                  trailing: const Icon(
-                    Icons.info,
-                    color: Colors.blue,
-                  ),
-                ),
-              ),
               if (box!.get("phone").toString() == "8905671058")
                 Card(
                   child: ListTile(

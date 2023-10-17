@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:screen_protector/screen_protector.dart';
 import 'package:tradie_id/config/config.dart';
 import 'package:tradie_id/home/ui/card_list.dart';
 import 'package:tradie_id/home/ui/home_page.dart';
@@ -9,7 +10,7 @@ import 'package:tradie_id/login/bloc/login_bloc.dart';
 import 'package:tradie_id/login/ui/login_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_screen/flutter_secure_screen.dart';
+// import 'package:flutter_secure_screen/flutter_secure_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:upgrader/upgrader.dart';
 import 'firebase_options.dart';
@@ -23,7 +24,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await FlutterSecureScreen.singleton.setAndroidScreenSecure(true);
+  // await FlutterSecureScreen.singleton.setAndroidScreenSecure(true);
+  await ScreenProtector.preventScreenshotOn();
+  await ScreenProtector.protectDataLeakageOn();
   ScreenCaptureBlocker.blockScreenCapture();
   runApp(const MyApp());
 }

@@ -66,8 +66,9 @@ class RList {
   String? city;
   String? state;
   String? country;
-  Null? pinCode;
-  Null? description;
+  String? expiryDate;
+  dynamic pinCode;
+  dynamic description;
 
   RList(
       {this.employeId,
@@ -75,6 +76,7 @@ class RList {
       this.employeEmail,
       this.employeRole,
       this.cardNo,
+      this.expiryDate,
 
       this.license,
       this.profileImage,
@@ -98,6 +100,7 @@ class RList {
     employeName = json['employeName'];
     employeEmail = json['employeEmail'];
     employeRole = json['employeRole'];
+    expiryDate = json['expiry_date'];
     cardNo = json['card_no'];
 
     license = json['license'];

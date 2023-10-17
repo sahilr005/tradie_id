@@ -20,7 +20,6 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final TextEditingController usernameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController countryCodeController =
       TextEditingController(text: "+61");
@@ -82,22 +81,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16.0),
-                TextFormField(
-                  controller: emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
-                    }
-                    // You can add more sophisticated email validation here
-                    return null;
-                  },
-                ),
+         
                 const SizedBox(height: 16.0),
                 TextFormField(
                   controller: phoneController,
@@ -201,7 +185,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   fromLogin: false,
                   verificationId: verificationId,
                   onlyNumber: phoneController.text,
-                  email: emailController.text,
                   name: usernameController.text,
                   // password: passwordController.text,
                   phoneNo: countryCodeController.text + phoneController.text,
