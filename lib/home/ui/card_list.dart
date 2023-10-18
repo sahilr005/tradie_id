@@ -118,7 +118,11 @@ class _CardListState extends State<CardListScreen> {
           child: globleCardData == null
               ? const Center(child: CircularProgressIndicator())
               : globleCardData!.value.isEmpty
-                  ? const Center(child: Text("No Data Found"))
+                  ? const Center(child: Text("You are currently not registered with any Multi-Trades, please contact the Multi-Trade or Principal Contractor that you are providing services to.",
+                  style: TextStyle(),
+                  textAlign: TextAlign.center,
+                  ),
+                  )
                   : RefreshIndicator(
                       onRefresh: () => apiCall(),
                       child: ListView.builder(

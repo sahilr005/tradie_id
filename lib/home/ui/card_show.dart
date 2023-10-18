@@ -322,11 +322,11 @@ class _CardShowState extends State<CardShow> {
                   ),
                 ),
                 const SizedBox(
-                  height: 10,
+                  height: 15,
                 ),
                 if (isExpiryDateWarning(expiryDate))
-                  const Text(
-                    "Warning: Your card expiry soon.",
+                  Text(
+                    "Your card will expire soon, please contact the Compliance Department at ${widget.cardData.name}.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.red,
