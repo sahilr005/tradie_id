@@ -1,18 +1,31 @@
 import 'dart:typed_data';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:slide_digital_clock/slide_digital_clock.dart';
 import 'package:flutter/material.dart';
 import 'package:tradie_id/config/config.dart';
 import 'package:intl/intl.dart';
-import 'package:tradie_id/home/ui/card_list.dart';
 import 'package:photo_view/photo_view.dart';
 
 class CardShow extends StatefulWidget {
   final cardData;
-  const CardShow({super.key, this.cardData});
+  final DocumentSnapshot userData;
+  const CardShow({super.key, this.cardData, required this.userData});
 
   @override
   State<CardShow> createState() => _CardShowState();
+}
+
+bool isExpiryDateWarning(DateTime expiryDate) {
+  final currentDate = DateTime.now();
+  final daysDifference = expiryDate.difference(currentDate).inDays;
+  return daysDifference < 60;
+}
+
+bool isExpiry(DateTime expiryDate) {
+  final currentDate = DateTime.now();
+  return expiryDate.isBefore(currentDate);
 }
 
 class _CardShowState extends State<CardShow> {
@@ -20,11 +33,6 @@ class _CardShowState extends State<CardShow> {
   Uint8List? _imageFile;
 
   // Function to check if expiry date is less than 60 days in the future
-  bool isExpiryDateWarning(DateTime expiryDate) {
-    final currentDate = DateTime.now();
-    final daysDifference = expiryDate.difference(currentDate).inDays;
-    return daysDifference < 60;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,15 +124,13 @@ class _CardShowState extends State<CardShow> {
                                           ),
                                           const Spacer(),
                                           Text(
-                                            widget.cardData.employeName
-                                                .toString(),
+                                            widget.cardData.name.toString(),
                                             style: const TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                           Text(
-                                            widget.cardData.employeRole
-                                                .toString(),
+                                            widget.cardData.role.toString(),
                                             style:
                                                 const TextStyle(fontSize: 16),
                                           ),
@@ -136,7 +142,7 @@ class _CardShowState extends State<CardShow> {
                                             ),
                                           ),
                                           Text(
-                                            "Lic No:${widget.cardData.license}",
+                                            "Lic No:${widget.userData.get("license") ?? ""}",
                                             style: const TextStyle(
                                               fontWeight: FontWeight.w600,
                                             ),
@@ -160,39 +166,55 @@ class _CardShowState extends State<CardShow> {
                                         //       color: Colors.black),
                                         // ),
                                         const SizedBox(height: 4),
-                                        FutureBuilder(
-                                          future: getCachedImage(widget
-                                              .cardData.profileImage
-                                              .toString()),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.connectionState ==
-                                                ConnectionState.waiting) {
-                                              return const CircularProgressIndicator();
-                                            } else if (snapshot.hasData) {
-                                              dynamic d = snapshot.data!;
-                                              return ConstrainedBox(
-                                                constraints:
-                                                    const BoxConstraints(
-                                                  minWidth: 50,
-                                                  maxWidth: 160,
-                                                  maxHeight: 135,
-                                                  minHeight: 50
-                                                ),
-                                                child: Image.memory(
-                                                  Uint8List.fromList(d),
-                                                  fit: BoxFit.contain,
-                                                ),
-                                              );
-                                            } else {
-                                              return Image.asset(
-                                                "assets/no_user.jpg",
-                                                height: 130,
-                                                width: 90,
-                                                fit: BoxFit.cover,
-                                              );
-                                            }
-                                          },
+                                        Container(
+                                          constraints: const BoxConstraints(
+                                              minWidth: 50,
+                                              maxWidth: 160,
+                                              maxHeight: 135,
+                                              minHeight: 50),
+                                          child: CachedNetworkImage(
+                                            imageUrl: widget
+                                                .cardData.profileImage
+                                                .toString(),
+                                            placeholder: (context, url) =>
+                                                const CircularProgressIndicator(),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    const Icon(Icons.error),
+                                          ),
                                         ),
+                                        // FutureBuilder(
+                                        //   future: getCachedImage(widget
+                                        //       .cardData.profileImage
+                                        //       .toString()),
+                                        //   builder: (context, snapshot) {
+                                        //     if (snapshot.connectionState ==
+                                        //         ConnectionState.waiting) {
+                                        //       return const CircularProgressIndicator();
+                                        //     } else if (snapshot.hasData) {
+                                        //       dynamic d = snapshot.data!;
+                                        //       return ConstrainedBox(
+                                        //         constraints:
+                                        // const BoxConstraints(
+                                        //     minWidth: 50,
+                                        //     maxWidth: 160,
+                                        //     maxHeight: 135,
+                                        //     minHeight: 50),
+                                        //         child: Image.memory(
+                                        //           Uint8List.fromList(d),
+                                        //           fit: BoxFit.contain,
+                                        //         ),
+                                        //       );
+                                        //     } else {
+                                        //       return Image.asset(
+                                        //         "assets/no_user.jpg",
+                                        //         height: 130,
+                                        //         width: 90,
+                                        //         fit: BoxFit.cover,
+                                        //       );
+                                        //     }
+                                        //   },
+                                        // ),
                                         // Image.network(
                                         //   cardData.profileImage.toString(),
                                         //   height: 130,
@@ -227,24 +249,37 @@ class _CardShowState extends State<CardShow> {
                         Positioned(
                           left: 4,
                           top: 4,
-                          child: FutureBuilder(
-                            future: getCachedImage(
-                                widget.cardData.companyLogo.toString()),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const CircularProgressIndicator();
-                              } else if (snapshot.hasData) {
-                                dynamic d = snapshot.data!;
-                                return Image.memory(
-                                  Uint8List.fromList(d),
-                                  height: 70,
-                                  fit: BoxFit.cover,
-                                );
-                              } else {
-                                return const Text("Image not available");
-                              }
-                            },
+                          child: Container(
+                            constraints: const BoxConstraints(
+                                minWidth: 50, maxWidth: 200),
+                            child: CachedNetworkImage(
+                              imageUrl: widget.userData.get("companyLogo"),
+                              placeholder: (context, url) =>
+                                  const CircularProgressIndicator(),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                              height: 70,
+                              fit: BoxFit.cover,
+                            ),
+                            // FutureBuilder(
+                            //                         future: getCachedImage(
+                            //                             widget.userData.get("companyLogo")),
+                            //                         builder: (context, snapshot) {
+                            //                           if (snapshot.connectionState ==
+                            //                               ConnectionState.waiting) {
+                            //                             return const CircularProgressIndicator();
+                            //                           } else if (snapshot.hasData) {
+                            //                             dynamic d = snapshot.data!;
+                            //                             return Image.memory(
+                            //                               Uint8List.fromList(d),
+                            //                               height: 70,
+                            //                               fit: BoxFit.cover,
+                            //                             );
+                            //                           } else {
+                            //                             return const Text("Image not available");
+                            //                           }
+                            //                         },
+                            //                       ),
                           ),
                         ),
                       ],
@@ -328,7 +363,7 @@ class _CardShowState extends State<CardShow> {
                   Text(
                     "Your card will expire soon, please contact the Compliance Department at ${widget.cardData.name}.",
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.red,
                       fontWeight: FontWeight.bold,
                     ),

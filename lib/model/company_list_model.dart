@@ -1,25 +1,18 @@
 class CompanyListModel {
-  String? status;
-  String? message;
-  Result? result;
+  List<RList>? cardList;
 
-  CompanyListModel({this.status, this.message, this.result});
+  CompanyListModel({required this.cardList});
 
   CompanyListModel.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
-    message = json['message'];
-    result =
-        json['result'] != null ? new Result.fromJson(json['result']) : null;
+    cardList = (json['cardList'] as List<dynamic>)
+        .map((cardJson) => RList.fromJson(cardJson))
+        .toList();
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['message'] = this.message;
-    if (this.result != null) {
-      data['result'] = this.result!.toJson();
-    }
-    return data;
+    return {
+      'cardList': cardList!.map((card) => card.toJson()).toList(),
+    };
   }
 }
 
@@ -32,15 +25,15 @@ class Result {
     if (json['list'] != null) {
       list = <RList>[];
       json['list'].forEach((v) {
-        list!.add(new RList.fromJson(v));
+        list!.add(RList.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.list != null) {
-      data['list'] = this.list!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (list != null) {
+      data['list'] = list!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -54,11 +47,11 @@ class RList {
   String? cardNo;
   String? license;
   String? profileImage;
-  int? companyId;
+  dynamic companyId;
   int? id;
   String? name;
   String? email;
-  int? role;
+  String? role;
   String? phoneNo;
   String? password;
   String? companyLogo;
@@ -77,7 +70,6 @@ class RList {
       this.employeRole,
       this.cardNo,
       this.expiryDate,
-
       this.license,
       this.profileImage,
       this.companyId,
@@ -122,29 +114,29 @@ class RList {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['employeId'] = this.employeId;
-    data['employeName'] = this.employeName;
-    data['employeEmail'] = this.employeEmail;
-    data['employeRole'] = this.employeRole;
-    data['card_no'] = this.cardNo;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['employeId'] = employeId;
+    data['employeName'] = employeName;
+    data['employeEmail'] = employeEmail;
+    data['employeRole'] = employeRole;
+    data['card_no'] = cardNo;
 
-    data['license'] = this.license;
-    data['profileImage'] = this.profileImage;
-    data['company_id'] = this.companyId;
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['email'] = this.email;
-    data['role'] = this.role;
-    data['phone_no'] = this.phoneNo;
-    data['password'] = this.password;
-    data['companyLogo'] = this.companyLogo;
-    data['status'] = this.status;
-    data['city'] = this.city;
-    data['state'] = this.state;
-    data['country'] = this.country;
-    data['pin_code'] = this.pinCode;
-    data['description'] = this.description;
+    data['license'] = license;
+    data['profileImage'] = profileImage;
+    data['company_id'] = companyId;
+    data['id'] = id;
+    data['name'] = name;
+    data['email'] = email;
+    data['role'] = role;
+    data['phone_no'] = phoneNo;
+    data['password'] = password;
+    data['companyLogo'] = companyLogo;
+    data['status'] = status;
+    data['city'] = city;
+    data['state'] = state;
+    data['country'] = country;
+    data['pin_code'] = pinCode;
+    data['description'] = description;
     return data;
   }
 }

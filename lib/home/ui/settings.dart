@@ -91,7 +91,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           children: [
             InkWell(
               onTap: () async {
-                var url = "https://esofttechnologies.com.au/";
+                var url = "https://esofttechnologies.com.au/tradie-id.html";
                 if (!await launchUrl(Uri.parse(url))) {
                   throw Exception('Could not launch $url');
                 }

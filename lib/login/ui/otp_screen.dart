@@ -117,7 +117,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
         } else {
           try {
             Response? res = await dio.post(
-              "http://68.178.163.90:4500/api/employe/register",
+              "http://68.178.163.90:5500/api/employe/register",
               data: {"name": widget.name, "phone_no": widget.onlyNumber},
             );
 
@@ -131,7 +131,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
             } else {
               box!.put('phone', widget.onlyNumber);
               box!.put('name', widget.name);
-              box!.put('phone', widget.phoneNo);
+              // box!.put('phone', widget.phoneNo);
               // ignore: use_build_context_synchronously
               Navigator.pushAndRemoveUntil(
                   context,

@@ -1,8 +1,8 @@
-import 'dart:developer';
+import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:tradie_id/config/config.dart';
 import 'package:tradie_id/home/ui/card_list.dart';
 import 'package:tradie_id/home/ui/inquiry.dart';
@@ -10,46 +10,45 @@ import 'package:tradie_id/home/ui/job_appiaction.dart';
 import 'package:tradie_id/home/ui/job_list.dart';
 import 'package:tradie_id/home/ui/my_review.dart';
 import 'package:tradie_id/home/ui/settings.dart';
-import 'package:tradie_id/model/company_list_model.dart';
 
-apiCall() async {
-  try {
-    Response res = await Dio()
-        .post("http://68.178.163.90:4500/api/employe/companyList", data: {
-      "phone_no": box!.get("phone").toString().contains("+")
-          ? box!.get("phone").toString().replaceRange(0, 3, "")
-          : box!.get("phone").toString()
-    });
-    // log(box!.get("phone").toString());
-    // log(res.data.toString());
+// apiCall() async {
+//   try {
+//     Response res = await Dio()
+//         .post("http://68.178.163.90:4500/api/employe/companyList", data: {
+//       "phone_no": box!.get("phone").toString().contains("+")
+//           ? box!.get("phone").toString().replaceRange(0, 3, "")
+//           : box!.get("phone").toString()
+//     });
+//     // log(box!.get("phone").toString());
+//     // log(res.data.toString());
 
-    CompanyListModel data = CompanyListModel.fromJson(res.data);
+//     CompanyListModel data = CompanyListModel.fromJson(res.data);
 
-    // Cache image data for each company
-    try {
-      for (var i = 0; i < data.result!.list!.length; i++) {
-        final companyLogoUrl = data.result!.list![i].companyLogo.toString();
-        final profileImageUrl = data.result!.list![i].profileImage.toString();
-        if (companyLogoUrl.isNotEmpty || companyLogoUrl != "") {
-          await cacheImage(companyLogoUrl);
-        }
-        if (profileImageUrl.isNotEmpty || profileImageUrl != "") {
-          await cacheImage(profileImageUrl);
-        }
-      }
-    } catch (e) {
-      log(e.toString());
-    }
+//     // Cache image data for each company
+//     try {
+//       for (var i = 0; i < data.result!.list!.length; i++) {
+//         final companyLogoUrl = data.result!.list![i].companyLogo.toString();
+//         final profileImageUrl = data.result!.list![i].profileImage.toString();
+//         if (companyLogoUrl.isNotEmpty || companyLogoUrl != "") {
+//           await cacheImage(companyLogoUrl);
+//         }
+//         if (profileImageUrl.isNotEmpty || profileImageUrl != "") {
+//           await cacheImage(profileImageUrl);
+//         }
+//       }
+//     } catch (e) {
+//       log(e.toString());
+//     }
 
-    box!.put("cardList", data.result!.list!);
-    box!.put("lastTime", DateTime.now());
-    globleCardData!.value = box!.get("cardList");
-    log("Api Call  ");
-  } catch (e) {
-    Fluttertoast.showToast(msg: "You are offline");
-  }
-  // log(data.result!.list.toString());
-}
+//     box!.put("cardList", data.result!.list!);
+//     box!.put("lastTime", DateTime.now());
+//     globleCardData!.value = box!.get("cardList");
+//     log("Api Call  ");
+//   } catch (e) {
+//     Fluttertoast.showToast(msg: "You are offline");
+//   }
+//   // log(data.result!.list.toString());
+// }
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -59,7 +58,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentIndex = 0;
+  final RxInt _currentIndex = 0.obs;
   final List<Widget> _tabs = box!.get("phone").toString() != "8905671058"
       ? [const CardListScreen(), const SettingsScreen()]
       : [
@@ -67,42 +66,68 @@ class _HomePageState extends State<HomePage> {
           const InquiryScreen(),
           const SettingsScreen(),
         ];
+  Rx<PageController> pageController = PageController(initialPage: 0).obs;
+  Future CheckUserConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        setState(() {
+          ActiveConnection = true;
+        });
+      }
+    } on SocketException catch (_) {
+      setState(() {
+        ActiveConnection = false;
+      });
+    }
+  }
 
   @override
   void initState() {
-    apiCall();
-    setState(() {});
+    CheckUserConnection();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _tabs[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: [
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+    return Obx(() => Scaffold(
+          body: PageView(
+            controller: pageController.value,
+            allowImplicitScrolling:
+                box!.get("phone").toString() == "8905671058",
+            physics: box!.get("phone").toString() == "8905671058"
+                ? const BouncingScrollPhysics()
+                : const NeverScrollableScrollPhysics(),
+            onPageChanged: (index) {
+              _currentIndex.value = index;
+            },
+            children: _tabs,
           ),
-          if (box!.get("phone").toString() == "8905671058")
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.info),
-              label: 'Inquiry',
-            ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
-      ),
-    );
+          // _tabs[_currentIndex.value],
+          bottomNavigationBar: box!.get("phone").toString() == "8905671058"
+              ? BottomNavigationBar(
+                  currentIndex: _currentIndex.value,
+                  onTap: (index) {
+                    pageController.value.jumpToPage(index);
+                  },
+                  items: [
+                    const BottomNavigationBarItem(
+                      icon: Icon(Icons.home),
+                      label: 'Home',
+                    ),
+                    if (box!.get("phone").toString() == "8905671058")
+                      const BottomNavigationBarItem(
+                        icon: Icon(Icons.info),
+                        label: 'Inquiry',
+                      ),
+                    const BottomNavigationBarItem(
+                      icon: Icon(Icons.settings),
+                      label: 'Settings',
+                    ),
+                  ],
+                )
+              : null,
+        ));
   }
 }
 

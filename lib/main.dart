@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:screen_protector/screen_protector.dart';
 import 'package:tradie_id/config/config.dart';
 import 'package:tradie_id/home/ui/card_list.dart';
@@ -10,17 +11,20 @@ import 'package:tradie_id/login/bloc/login_bloc.dart';
 import 'package:tradie_id/login/ui/login_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/services.dart';
-// import 'package:flutter_secure_screen/flutter_secure_screen.dart';
+// import 'package:flutter_secure_screen/flutter  _secure_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:upgrader/upgrader.dart';
 import 'firebase_options.dart';
 import 'package:get/get.dart';
 
+PackageInfo? packageInfo;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  Hive.registerAdapter(RListAdapter());
-  box = await Hive.openBox('tradieId');
+  packageInfo = await PackageInfo.fromPlatform();
+  // Hive.registerAdapter(RListAdapter());
+  box = await Hive.openBox('tradieId2');
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -60,6 +64,7 @@ class MyApp extends StatelessWidget {
       builder: EasyLoading.init(),
       home: UpgradeAlert(
         upgrader: Upgrader(
+          debugDisplayAlways: true,
           showIgnore: false,
           showLater: false,
         ),

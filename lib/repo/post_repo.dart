@@ -10,7 +10,7 @@ class ApiCall {
   static postLoginData({required String phone}) async {
     try {
       final response = await dio.post(
-        'http://68.178.163.90:4500/api/employe/login',
+        'http://68.178.163.90:5500/api/employe/login',
         data: {'phone_no': phone},
       );
       if (response.statusCode == 200) {
@@ -37,22 +37,4 @@ class ApiCall {
     }
   }
 
-  static homeData({phoneNo}) async {
-    try {
-      final response = await dio.post(
-        'http://68.178.163.90:4500/api/employe/companyList',
-        data: {'phone_no': phoneNo},
-      );
-      print(response.data);
-      if (response.statusCode == 200) {
-        LoginModel loginModel = LoginModel.fromJson(response.data);
-        return loginModel;
-      } else {
-        throw response.data["message"];
-      }
-    } catch (e) {
-      log(e.toString());
-      rethrow;
-    }
-  }
 }

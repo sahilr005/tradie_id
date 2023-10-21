@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tradie_id/config/config.dart';
+import 'package:tradie_id/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class _ProfilePageState extends State<ProfilePage> {
       text: box!.containsKey("phone") ? box!.get("phone").toString() : "");
 
   String? _imagePath;
+  String version = packageInfo!.version;
 
   _pickImage() async {
     final ImagePicker picker = ImagePicker();
@@ -140,7 +142,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const Spacer(),
+              Text("V $version")
               // ElevatedButton(
               //   onPressed: () {
               //     // Add functionality here
