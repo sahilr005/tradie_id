@@ -61,10 +61,10 @@ class MyApp extends StatelessWidget {
         useMaterial3: false,
       ),
       debugShowCheckedModeBanner: false,
-      builder: EasyLoading.init(),
+     builder: EasyLoading.init(),
       home: UpgradeAlert(
         upgrader: Upgrader(
-          debugDisplayAlways: true,
+          // debugDisplayAlways: true,
           showIgnore: false,
           showLater: false,
         ),
