@@ -258,7 +258,7 @@ class _CardListState extends State<CardListScreen> {
                                                       CrossAxisAlignment.end,
                                                   children: [
                                                     Text(
-                                                      "Phone : ${cardData.phoneNo}",
+                                                      "Phone : ${d.get("phone_no") ?? ""}",
                                                       style: const TextStyle(
                                                           fontSize: 14,
                                                           color: Colors.black),
@@ -359,7 +359,7 @@ class _CardListState extends State<CardListScreen> {
               } else {
                 return const Center(
                   child: Text(
-                    "You are currently not registered with any Multi-Trades, please contact the Multi-Trade or Principal Contractor that you are providing services to.",
+                    "You are currently not registered with any Multi-Trades or Deactivated, please contact the Multi-Trade or Principal Contractor that you are providing services to.",
                     style: TextStyle(),
                     textAlign: TextAlign.center,
                   ),

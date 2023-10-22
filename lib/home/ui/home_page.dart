@@ -1,5 +1,7 @@
+import 'dart:developer';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -10,6 +12,7 @@ import 'package:tradie_id/home/ui/job_appiaction.dart';
 import 'package:tradie_id/home/ui/job_list.dart';
 import 'package:tradie_id/home/ui/my_review.dart';
 import 'package:tradie_id/home/ui/settings.dart';
+import 'package:tradie_id/main.dart';
 
 // apiCall() async {
 //   try {
@@ -85,7 +88,23 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     CheckUserConnection();
+    versionCheck();
     super.initState();
+  }
+
+  versionCheck() async {
+    DocumentSnapshot appConfig = await FirebaseFirestore.instance
+        .collection("AppConfig")
+        .doc("v1Bjv4AI7GgWui1jFJQm")
+        .get();
+
+    if (packageInfo != null) {
+      if (packageInfo!.version.toString() !=await appConfig.get("version")) {
+        Future.delayed(Duration.zero, () {
+          showUpgradeDialog(context);
+        });
+      }
+    }
   }
 
   @override

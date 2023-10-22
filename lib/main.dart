@@ -14,6 +14,7 @@ import 'package:flutter/services.dart';
 // import 'package:flutter_secure_screen/flutter  _secure_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:upgrader/upgrader.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'firebase_options.dart';
 import 'package:get/get.dart';
 
@@ -61,22 +62,46 @@ class MyApp extends StatelessWidget {
         useMaterial3: false,
       ),
       debugShowCheckedModeBanner: false,
-     builder: EasyLoading.init(),
-      home: UpgradeAlert(
-        upgrader: Upgrader(
-          // debugDisplayAlways: true,
-          showIgnore: false,
-          showLater: false,
-        ),
-        child: MultiBlocProvider(
-          providers: [
-            BlocProvider<LoginBloc>(
-              create: (context) => LoginBloc(),
-            )
-          ],
-          child: box!.containsKey("phone") ? const HomePage() : LoginPage(),
-        ),
+      builder: EasyLoading.init(),
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider<LoginBloc>(
+            create: (context) => LoginBloc(),
+          )
+        ],
+        child: box!.containsKey("phone") ? const HomePage() : LoginPage(),
       ),
     );
   }
 }
+
+  Future<void> showUpgradeDialog(BuildContext context) {
+  return showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('New Version Available'),
+        content: Text('A new version of the app is available. Please update to continue using the app.'),
+        actions: <Widget>[
+          
+          // TextButton(
+          //   child: const Text('Ignore'),
+          //   onPressed: () async{
+          // Get.back();
+          //   },
+          // ),
+          TextButton(
+            child: Text('Update'),
+            onPressed: () async{
+              const url = 'https://apps.apple.com/app/6451134964'; // Replace with your app's App Store URL
+  if (await canLaunchUrl(Uri.parse(url))) {
+    await launchUrl(Uri.parse(url));
+  } else {
+  }
+            },
+          ),
+        ],
+      );
+    },
+  );}
