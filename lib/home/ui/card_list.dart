@@ -352,6 +352,18 @@ class _CardListState extends State<CardListScreen> {
                                 ),
                               ),
                             );
+                          }else if(data.cardList!.length.isEqual(1)&& snapshotUser.data != null &&
+                              isExpiry(DateFormat('yyyy-MM-dd')
+                                  .parse(cardData.expiryDate.toString()))){
+                         return   Container(
+                          height: gt.Get.height*.8,
+                          alignment: Alignment.center,
+                  child: Text(
+                    "You are currently not registered with any Multi-Trades or Deactivated, please contact the Multi-Trade or Principal Contractor that you are providing services to.",
+                    style: TextStyle(),
+                    textAlign: TextAlign.center,
+                  ),
+                );
                           }
                           return const SizedBox();
                         });

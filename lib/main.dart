@@ -75,16 +75,16 @@ class MyApp extends StatelessWidget {
   }
 }
 
-  Future<void> showUpgradeDialog(BuildContext context) {
+Future<void> showUpgradeDialog(BuildContext context) {
   return showDialog(
     context: context,
     barrierDismissible: false,
     builder: (context) {
       return AlertDialog(
         title: Text('New Version Available'),
-        content: Text('A new version of the app is available. Please update to continue using the app.'),
+        content: Text(
+            'A new version of the app is available. Please update to continue using the app.'),
         actions: <Widget>[
-          
           // TextButton(
           //   child: const Text('Ignore'),
           //   onPressed: () async{
@@ -93,15 +93,17 @@ class MyApp extends StatelessWidget {
           // ),
           TextButton(
             child: Text('Update'),
-            onPressed: () async{
-              const url = 'https://apps.apple.com/app/6451134964'; // Replace with your app's App Store URL
-  if (await canLaunchUrl(Uri.parse(url))) {
-    await launchUrl(Uri.parse(url));
-  } else {
-  }
+            onPressed: () async {
+              var url = Platform.isAndroid
+                  ? "https://play.google.com/store/apps/details?id=com.tradie.Id"
+                  : 'https://apps.apple.com/app/6451134964'; // Replace with your app's App Store URL
+              if (await canLaunchUrl(Uri.parse(url))) {
+                await launchUrl(Uri.parse(url));
+              } else {}
             },
           ),
         ],
       );
     },
-  );}
+  );
+}
