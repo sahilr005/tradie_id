@@ -340,7 +340,8 @@ class _CardListState extends State<CardListScreen> {
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Text(
-                                          cardData.name ?? "",
+                                          d.get("name")??"",
+                                          // cardData.name ?? "",
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w600,
                                           ),

@@ -143,7 +143,30 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               const Spacer(),
-              Text("V $version")
+              Text("V $version"),
+              // const SizedBox(height: 10),
+              // InkWell(
+              //   onTap: () async {
+              //     var url = "https://esofttechnologies.com.au/tradie-id.html";
+              //     if (!await launchUrl(Uri.parse(url))) {
+              //       throw Exception('Could not launch $url');
+              //     }
+              //   },
+              //   child: RichText(
+              //     text: const TextSpan(
+              //         text: "Powered by ",
+              //         style: TextStyle(color: Colors.grey),
+              //         children: [
+              //           TextSpan(
+              //             text: "info@esoftechnologies.com.au",
+              //             style: TextStyle(
+              //                 color: Colors.blue,
+              //                 decoration: TextDecoration.underline),
+              //           ),
+              //         ]),
+              //   ),
+              // ),
+
               // ElevatedButton(
               //   onPressed: () {
               //     // Add functionality here
@@ -155,7 +178,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.only(left: 10, bottom: 10, right: 10),
         child: ElevatedButton(
             onPressed: () {
               box!.put("name", firstNameControllers.text.toString());
