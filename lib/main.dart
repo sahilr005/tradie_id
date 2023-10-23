@@ -63,13 +63,16 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       builder: EasyLoading.init(),
-      home: MultiBlocProvider(
-        providers: [
-          BlocProvider<LoginBloc>(
-            create: (context) => LoginBloc(),
-          )
-        ],
-        child: box!.containsKey("phone") ? const HomePage() : LoginPage(),
+      home: UpgradeAlert(
+         upgrader: Upgrader(dialogStyle: UpgradeDialogStyle.cupertino,showIgnore: false,showLater: false),
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider<LoginBloc>(
+              create: (context) => LoginBloc(),
+            )
+          ],
+          child: box!.containsKey("phone") ? const HomePage() : LoginPage(),
+        ),
       ),
     );
   }

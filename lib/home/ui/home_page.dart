@@ -93,18 +93,18 @@ class _HomePageState extends State<HomePage> {
   }
 
   versionCheck() async {
-    DocumentSnapshot appConfig = await FirebaseFirestore.instance
+    if(Platform.isIOS)
+    {DocumentSnapshot appConfig = await FirebaseFirestore.instance
         .collection("AppConfig")
         .doc("v1Bjv4AI7GgWui1jFJQm")
         .get();
-    log(packageInfo!.version.toString());
     if (packageInfo != null) {
       if (packageInfo!.version.toString() != await appConfig.get("version")) {
         Future.delayed(Duration.zero, () {
           showUpgradeDialog(context);
         });
       }
-    }
+    }}
   }
 
   @override
