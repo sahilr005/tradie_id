@@ -1,4 +1,5 @@
 import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -117,7 +118,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
         } else {
           try {
             Response? res = await dio.post(
-              "http://68.178.163.90:5500/api/employe/register",
+              "https://backend.tradieid.net.au:8500/api/employe/register",
               data: {"name": widget.name, "phone_no": widget.onlyNumber},
             );
 

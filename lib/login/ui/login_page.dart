@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,6 @@ import 'package:tradie_id/login/bloc/login_bloc.dart';
 import 'package:tradie_id/login/bloc/login_state.dart';
 import 'package:tradie_id/login/ui/otp_screen.dart';
 import 'package:tradie_id/login/ui/sign_up.dart';
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:tradie_id/model/login_model.dart';
 
 class LoginPage extends StatelessWidget {
@@ -170,7 +170,8 @@ class LoginForm extends StatelessWidget {
   }) async {
     try {
       final response = await dio.post(
-        'http://68.178.163.90:5500/api/employe/login',
+        "https://backend.tradieid.net.au:8500/api/employe/login",
+        // 'https://backend.tradieid.net.au:8500/api/employe/login',
         data: {'phone_no': onlyNumber},
       );
       EasyLoading.show();

@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Staff Id',
+      title: 'Tradie Id',
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
         useMaterial3: false,

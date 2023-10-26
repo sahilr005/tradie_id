@@ -1,16 +1,17 @@
 import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:tradie_id/config/config.dart';
 import 'package:tradie_id/home/ui/home_page.dart';
 import 'package:tradie_id/model/login_model.dart';
-import 'package:get/get.dart';
 
 class ApiCall {
   static postLoginData({required String phone}) async {
     try {
       final response = await dio.post(
-        'http://68.178.163.90:5500/api/employe/login',
+        'https://backend.tradieid.net.au:8500/api/employe/login',
         data: {'phone_no': phone},
       );
       if (response.statusCode == 200) {
@@ -36,5 +37,4 @@ class ApiCall {
       log(e.toString());
     }
   }
-
 }
