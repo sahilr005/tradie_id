@@ -1,22 +1,23 @@
 import 'dart:io';
+
+// import 'package:flutter_secure_screen/flutter_secure_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:screen_protector/screen_protector.dart';
 import 'package:tradie_id/config/config.dart';
-import 'package:tradie_id/home/ui/card_list.dart';
 import 'package:tradie_id/home/ui/home_page.dart';
 import 'package:tradie_id/login/bloc/login_bloc.dart';
 import 'package:tradie_id/login/ui/login_page.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:flutter/services.dart';
-// import 'package:flutter_secure_screen/flutter  _secure_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:upgrader/upgrader.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import 'firebase_options.dart';
-import 'package:get/get.dart';
 
 PackageInfo? packageInfo;
 
@@ -64,7 +65,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       builder: EasyLoading.init(),
       home: UpgradeAlert(
-         upgrader: Upgrader(dialogStyle: UpgradeDialogStyle.cupertino,showIgnore: false,showLater: false),
+        upgrader: Upgrader(
+            dialogStyle: UpgradeDialogStyle.cupertino,
+            showIgnore: false,
+            showLater: false),
         child: MultiBlocProvider(
           providers: [
             BlocProvider<LoginBloc>(
@@ -84,8 +88,8 @@ Future<void> showUpgradeDialog(BuildContext context) {
     barrierDismissible: false,
     builder: (context) {
       return AlertDialog(
-        title: Text('New Version Available'),
-        content: Text(
+        title: const Text('New Version Available'),
+        content: const Text(
             'A new version of the app is available. Please update to continue using the app.'),
         actions: <Widget>[
           // TextButton(
@@ -95,7 +99,7 @@ Future<void> showUpgradeDialog(BuildContext context) {
           //   },
           // ),
           TextButton(
-            child: Text('Update'),
+            child: const Text('Update'),
             onPressed: () async {
               var url = Platform.isAndroid
                   ? "https://play.google.com/store/apps/details?id=com.tradie.Id"

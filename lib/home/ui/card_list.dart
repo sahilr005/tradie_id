@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -340,7 +339,7 @@ class _CardListState extends State<CardListScreen> {
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Text(
-                                          d.get("name")??"",
+                                          d.get("name") ?? "",
                                           // cardData.name ?? "",
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w600,
@@ -352,18 +351,19 @@ class _CardListState extends State<CardListScreen> {
                                 ),
                               ),
                             );
-                          }else if(data.cardList!.length.isEqual(1)&& snapshotUser.data != null &&
+                          } else if (data.cardList!.length.isEqual(1) &&
+                              snapshotUser.data != null &&
                               isExpiry(DateFormat('yyyy-MM-dd')
-                                  .parse(cardData.expiryDate.toString()))){
-                         return   Container(
-                          height: gt.Get.height*.8,
-                          alignment: Alignment.center,
-                  child: Text(
-                    "You are currently not registered with any Multi-Trades or Deactivated, please contact the Multi-Trade or Principal Contractor that you are providing services to.",
-                    style: TextStyle(),
-                    textAlign: TextAlign.center,
-                  ),
-                );
+                                  .parse(cardData.expiryDate.toString()))) {
+                            return Container(
+                              height: gt.Get.height * .8,
+                              alignment: Alignment.center,
+                              child: const Text(
+                                "You are currently not registered with any Multi-Trades or Deactivated, please contact the Multi-Trade or Principal Contractor that you are providing services to.",
+                                style: TextStyle(),
+                                textAlign: TextAlign.center,
+                              ),
+                            );
                           }
                           return const SizedBox();
                         });
