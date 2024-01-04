@@ -118,7 +118,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
         } else {
           try {
             Response? res = await dio.post(
-              "https://backend.tradieid.net.au:8500/api/employe/register",
+              "https://backend.tradieid.net.au/api/employe/register",
               data: {"name": widget.name, "phone_no": widget.onlyNumber},
             );
 

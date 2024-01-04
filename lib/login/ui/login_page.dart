@@ -170,11 +170,13 @@ class LoginForm extends StatelessWidget {
   }) async {
     try {
       final response = await dio.post(
-        "https://backend.tradieid.net.au:8500/api/employe/login",
+        "https://backend.tradieid.net.au/api/employe/login",
+        // "https://backend.tradieid.net.au:8500/api/employe/login",
         // 'https://backend.tradieid.net.au:8500/api/employe/login',
         data: {'phone_no': onlyNumber},
       );
       EasyLoading.show();
+      log(response.data.toString());
       if (response.statusCode == 200) {
         LoginModel loginModel = LoginModel.fromJson(response.data);
 

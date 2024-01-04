@@ -66,9 +66,10 @@ class MyApp extends StatelessWidget {
       builder: EasyLoading.init(),
       home: UpgradeAlert(
         upgrader: Upgrader(
-            dialogStyle: UpgradeDialogStyle.cupertino,
-            showIgnore: false,
-            showLater: false),
+          dialogStyle: UpgradeDialogStyle.cupertino,
+          showIgnore: false,
+          showLater: false,
+        ),
         child: MultiBlocProvider(
           providers: [
             BlocProvider<LoginBloc>(
@@ -103,10 +104,11 @@ Future<void> showUpgradeDialog(BuildContext context) {
             onPressed: () async {
               var url = Platform.isAndroid
                   ? "https://play.google.com/store/apps/details?id=com.tradie.Id"
-                  : 'https://apps.apple.com/app/6451134964'; // Replace with your app's App Store URL
-              if (await canLaunchUrl(Uri.parse(url))) {
-                await launchUrl(Uri.parse(url));
-              } else {}
+                  : 'https://apps.apple.com/app/6451134964';
+              try {
+                await launchUrl(Uri.parse(url),
+                    mode: LaunchMode.externalApplication);
+              } catch (e) {}
             },
           ),
         ],

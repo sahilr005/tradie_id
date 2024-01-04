@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -88,23 +87,53 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     CheckUserConnection();
-    versionCheck();
+    update();
     super.initState();
   }
 
-  versionCheck() async {
-    if(Platform.isIOS)
-    {DocumentSnapshot appConfig = await FirebaseFirestore.instance
-        .collection("AppConfig")
-        .doc("v1Bjv4AI7GgWui1jFJQm")
-        .get();
-    if (packageInfo != null) {
-      if (packageInfo!.version.toString() != await appConfig.get("version")) {
-        Future.delayed(Duration.zero, () {
-          showUpgradeDialog(context);
-        });
+  update() async {
+    if (Platform.isIOS) {
+      DocumentSnapshot appConfig = await FirebaseFirestore.instance
+          .collection("AppConfig")
+          .doc("v1Bjv4AI7GgWui1jFJQm")
+          .get();
+
+      if (packageInfo != null && appConfig.exists) {
+        String? firestoreVersion = appConfig.get("version");
+
+        if (firestoreVersion != null && firestoreVersion.isNotEmpty) {
+          List<int> appVersionParts =
+              packageInfo!.version.split('.').map((e) => int.parse(e)).toList();
+          List<int> firestoreVersionParts =
+              firestoreVersion.split('.').map((e) => int.parse(e)).toList();
+
+          int maxLength = appVersionParts.length > firestoreVersionParts.length
+              ? appVersionParts.length
+              : firestoreVersionParts.length;
+
+          bool shouldShowDialog = false;
+
+          for (int i = 0; i < maxLength; i++) {
+            int appPart = i < appVersionParts.length ? appVersionParts[i] : 0;
+            int firestorePart =
+                i < firestoreVersionParts.length ? firestoreVersionParts[i] : 0;
+
+            if (firestorePart > appPart) {
+              shouldShowDialog = true;
+              break;
+            } else if (firestorePart < appPart) {
+              break;
+            }
+          }
+
+          if (shouldShowDialog) {
+            Future.delayed(Duration.zero, () {
+              showUpgradeDialog(context);
+            });
+          }
+        }
       }
-    }}
+    }
   }
 
   @override
