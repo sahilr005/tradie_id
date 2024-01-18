@@ -50,6 +50,7 @@ class RList {
   dynamic companyId;
   int? id;
   String? name;
+  String? lastname;
   String? email;
   String? role;
   String? phoneNo;
@@ -75,6 +76,7 @@ class RList {
       this.companyId,
       this.id,
       this.name,
+      this.lastname,
       this.email,
       this.role,
       this.phoneNo,
@@ -100,6 +102,7 @@ class RList {
     companyId = json['company_id'];
     id = json['id'];
     name = json['name'];
+    lastname = json['lastname'];
     email = json['email'];
     role = json['role'];
     phoneNo = json['phone_no'];
@@ -126,6 +129,7 @@ class RList {
     data['company_id'] = companyId;
     data['id'] = id;
     data['name'] = name;
+    data['lastname'] = lastname;
     data['email'] = email;
     data['role'] = role;
     data['phone_no'] = phoneNo;

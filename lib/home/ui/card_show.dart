@@ -1,13 +1,14 @@
 import 'dart:typed_data';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:get/get.dart';
-import 'package:screenshot/screenshot.dart';
-import 'package:slide_digital_clock/slide_digital_clock.dart';
 import 'package:flutter/material.dart';
-import 'package:tradie_id/config/config.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:slide_digital_clock/slide_digital_clock.dart';
+import 'package:tradie_id/config/config.dart';
 
 class CardShow extends StatefulWidget {
   final cardData;
@@ -41,7 +42,8 @@ class _CardShowState extends State<CardShow> {
         DateFormat('yyyy-MM-dd').parse(widget.cardData.expiryDate);
     return Scaffold(
       appBar: AppBar(
-          title: Text(widget.userData.get("name") + " - ID Card" ?? " ID Card")),
+          title:
+              Text(widget.userData.get("name") + " - ID Card" ?? " ID Card")),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -111,25 +113,21 @@ class _CardShowState extends State<CardShow> {
                                   children: [
                                     SizedBox(
                                       height: 164,
-                                      width: Get.width*.4,
+                                      // width: Get.width * .4,
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          const Row(
-                                            children: [
-                                              // Image.network(
-                                              //   cardData.companyLogo.toString(),
-                                              //   height: 30,
-                                              // ),
-                                            ],
-                                          ),
+                                          const SizedBox(),
                                           const Spacer(),
-                                          Text(
-                                          widget.cardData.name.toString(),
-                                            style: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold),
+                                          SizedBox(
+                                            width: Get.width-260,
+                                            child: Text(
+                                              "${widget.cardData.name} ${widget.cardData.lastname}",
+                                              style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                           ),
                                           Text(
                                             widget.cardData.role.toString(),
@@ -252,8 +250,10 @@ class _CardShowState extends State<CardShow> {
                           left: 4,
                           top: 4,
                           child: Container(
-                            constraints:  BoxConstraints(
-                                minWidth: 50, maxWidth:Get.width*.4,),
+                            constraints: BoxConstraints(
+                              minWidth: 50,
+                              maxWidth: Get.width * .4,
+                            ),
                             child: CachedNetworkImage(
                               imageUrl: widget.userData.get("companyLogo"),
                               placeholder: (context, url) =>
