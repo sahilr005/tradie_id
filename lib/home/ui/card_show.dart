@@ -329,7 +329,8 @@ class _CardShowState extends State<CardShow> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Image.asset("assets/logo.png", width: 90),
-                            Image.asset("assets/sgch-logo.png", width: 100),
+                            Image.asset("assets/imgpsh_fullsize_anim.png", width: 100),
+                            // Image.asset("assets/sgch-logo.png", width: 100),
                           ],
                         ),
                         const SizedBox(height: 15),
