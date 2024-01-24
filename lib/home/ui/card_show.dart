@@ -320,7 +320,7 @@ class _CardShowState extends State<CardShow> {
                     child: Column(
                       children: [
                         const Text(
-                          "Authorized Contractor for",
+                          "Authorised Contractor for",
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
