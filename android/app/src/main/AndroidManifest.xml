@@ -5,6 +5,8 @@
    <application
         android:label="Tradie Id"
         android:name="${applicationName}"
+        android:allowBackup="false"
+        android:fullBackupOnly="false"
         android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
