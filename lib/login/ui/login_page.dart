@@ -48,7 +48,7 @@ class LoginPage extends StatelessWidget {
             if (state is LoginLoading) {
               return const Center(child: CircularProgressIndicator());
             } else {
-              return LoginForm();
+              return const LoginForm();
             }
           },
         ),
@@ -57,13 +57,20 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-class LoginForm extends StatelessWidget {
+class LoginForm extends StatefulWidget {
+  const LoginForm({super.key});
+
+  @override
+  State<LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   final TextEditingController usernameController = TextEditingController();
+
   final TextEditingController countryCodeController =
       TextEditingController(text: "+61");
-  LoginForm({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +95,7 @@ class LoginForm extends StatelessWidget {
                 prefixIcon: CountryCodePicker(
                   onChanged: (value) {
                     countryCodeController.text = value.dialCode!;
+                    setState(() {});
                   },
                   initialSelection: '+61',
                   favorite: const ['+61', '+91'],
@@ -133,6 +141,7 @@ class LoginForm extends StatelessWidget {
             const SizedBox(height: 24.0),
             ElevatedButton(
               onPressed: () {
+                log(" countryCodeController.text -    ${countryCodeController.text}");
                 signInWithPhone(
                     onlyNumber: usernameController.text.length == 9
                         ? "0${usernameController.text}"
@@ -181,6 +190,7 @@ class LoginForm extends StatelessWidget {
         LoginModel loginModel = LoginModel.fromJson(response.data);
 
         log(response.data.toString());
+        log("Phoen No-    $phoneNumber");
         try {
           await _firebaseAuth.verifyPhoneNumber(
               phoneNumber: phoneNumber,

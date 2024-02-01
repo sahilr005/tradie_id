@@ -42,8 +42,10 @@ class _CardShowState extends State<CardShow> {
         DateFormat('yyyy-MM-dd').parse(widget.cardData.expiryDate);
     return Scaffold(
       appBar: AppBar(
-          title:
-              Text(widget.userData.get("name") + " - ID Card" ?? " ID Card")),
+          title: Text(
+        widget.userData.get("name") + " - ID Card" ?? " ID Card",
+        style: const TextStyle(fontSize: 14),
+      )),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -109,19 +111,22 @@ class _CardShowState extends State<CardShow> {
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    SizedBox(
-                                      height: 164,
+                                    Container(
+                                      // height: 164,
                                       // width: Get.width * .4,
+                                      padding: const EdgeInsets.only(top: 70),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
                                         children: [
-                                          const SizedBox(),
-                                          const Spacer(),
+                                          // const SizedBox(height: 70),
+                                          // const Spacer(),
                                           SizedBox(
-                                            width: Get.width-260,
+                                            width: Get.width - 260,
                                             child: Text(
                                               "${widget.cardData.name} ${widget.cardData.lastname}",
                                               style: const TextStyle(
@@ -160,11 +165,6 @@ class _CardShowState extends State<CardShow> {
                                               color: Colors.black,
                                               fontWeight: FontWeight.bold),
                                         ),
-                                        // Text(
-                                        //   "Expiry: ${widget.cardData.expiryDate}",
-                                        //   style: const TextStyle(
-                                        //       color: Colors.black),
-                                        // ),
                                         const SizedBox(height: 4),
                                         Container(
                                           constraints: const BoxConstraints(
@@ -183,50 +183,6 @@ class _CardShowState extends State<CardShow> {
                                                     const Icon(Icons.error),
                                           ),
                                         ),
-                                        // FutureBuilder(
-                                        //   future: getCachedImage(widget
-                                        //       .cardData.profileImage
-                                        //       .toString()),
-                                        //   builder: (context, snapshot) {
-                                        //     if (snapshot.connectionState ==
-                                        //         ConnectionState.waiting) {
-                                        //       return const CircularProgressIndicator();
-                                        //     } else if (snapshot.hasData) {
-                                        //       dynamic d = snapshot.data!;
-                                        //       return ConstrainedBox(
-                                        //         constraints:
-                                        // const BoxConstraints(
-                                        //     minWidth: 50,
-                                        //     maxWidth: 160,
-                                        //     maxHeight: 135,
-                                        //     minHeight: 50),
-                                        //         child: Image.memory(
-                                        //           Uint8List.fromList(d),
-                                        //           fit: BoxFit.contain,
-                                        //         ),
-                                        //       );
-                                        //     } else {
-                                        //       return Image.asset(
-                                        //         "assets/no_user.jpg",
-                                        //         height: 130,
-                                        //         width: 90,
-                                        //         fit: BoxFit.cover,
-                                        //       );
-                                        //     }
-                                        //   },
-                                        // ),
-                                        // Image.network(
-                                        //   cardData.profileImage.toString(),
-                                        //   height: 130,
-                                        //   width: 90,
-                                        // ),
-
-                                        // Image.network(
-                                        //   cardData.companyLogo!,
-                                        //   fit: BoxFit.cover,
-                                        //   height: 130,
-                                        //   width: 90,
-                                        // ),
                                       ],
                                     ),
                                   ],
@@ -329,7 +285,8 @@ class _CardShowState extends State<CardShow> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Image.asset("assets/logo.png", width: 90),
-                            Image.asset("assets/imgpsh_fullsize_anim.png", width: 100),
+                            Image.asset("assets/imgpsh_fullsize_anim.png",
+                                width: 100),
                             // Image.asset("assets/sgch-logo.png", width: 100),
                           ],
                         ),

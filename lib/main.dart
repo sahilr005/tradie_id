@@ -56,14 +56,30 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final textScaleFactor = mediaQuery.textScaleFactor;
     return GetMaterialApp(
       title: 'Tradie Id',
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
         useMaterial3: false,
+        // textTheme: Theme.of(context).textTheme.apply(
+        //       // fontSizeFactor: textScaleFactor > 1 ? .8 : 2.0,
+        //     ),
       ),
       debugShowCheckedModeBanner: false,
-      builder: EasyLoading.init(),
+      builder: EasyLoading.init(
+        builder: (context, child) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              textScaler: mediaQuery.size.width.isLowerThan(350)
+                  ? const TextScaler.linear(.80)
+                  : null,
+            ),
+            child: child!,
+          );
+        },
+      ),
       home: UpgradeAlert(
         upgrader: Upgrader(
           dialogStyle: UpgradeDialogStyle.cupertino,

@@ -267,7 +267,7 @@ class _CardListState extends State<CardListScreen> {
                                                       "license No. ${d.get("license") ?? ""}",
                                                       style: const TextStyle(
                                                         color: Colors.black,
-                                                        fontSize: 16,
+                                                        fontSize: 14,
                                                       ),
                                                     ),
                                                   ],
