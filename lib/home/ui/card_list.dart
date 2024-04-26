@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' as gt;
 import 'package:intl/intl.dart';
@@ -223,15 +224,27 @@ class _CardListState extends State<CardListScreen> {
                                       ),
                                     );
                                   } else {
-                                    var snackBar = const SnackBar(
-                                        backgroundColor: Colors.black,
-                                        content: Text(
-                                          'Since you have not been connected to internet for few days now, your card data is not visible here. \n\nWhen you connect to network again, press - “Sync” button on the top right to restore card details.',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(fontSize: 16),
-                                        ));
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(snackBar);
+                                    showCupertinoDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return CupertinoAlertDialog(
+                                          content: const Text(
+                                            'Since you have not been connected to internet for few days now, your card data is not visible here. \n\nWhen you connect to network again, press - “Sync” button on the top right to restore card details.',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                          actions: [
+                                            CupertinoDialogAction(
+                                              child: const Text("Ok"),
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                            )
+                                          ],
+                                        );
+                                      },
+                                    );
+
                                     // Fluttertoast.showToast(
                                     //     msg:
                                     //         "Since you have not been connected to internet for few days now, your card data is not visible here. \n\nWhen you connect to network again, press - “Sync” button on the top right to restore card details.",
