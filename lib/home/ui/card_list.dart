@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart' as gt;
 import 'package:intl/intl.dart';
 import 'package:tradie_id/config/config.dart';
@@ -118,11 +117,28 @@ class _CardListState extends State<CardListScreen> {
                     children: [
                       Icon(Icons.sync),
                       SizedBox(width: 2),
-                      // Text("Sync")
+                      Text("Sync")
                     ],
                   )),
             ),
           ],
+        ),
+        bottomNavigationBar: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: const BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+          child: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Tradie ID was designed and developed by E-Soft Technologies in partnership with I&F Consulting Group. If you would like to have Tradie ID in your business, just contact Paul on 0419 228 408",
+                style: TextStyle(color: Colors.white, fontSize: 12),
+                textAlign: TextAlign.center,
+              )
+            ],
+          ),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -207,9 +223,19 @@ class _CardListState extends State<CardListScreen> {
                                       ),
                                     );
                                   } else {
-                                    Fluttertoast.showToast(
-                                        msg:
-                                            "Since Last 10 days you data not synced\n connect your device with network & sync");
+                                    var snackBar = const SnackBar(
+                                        backgroundColor: Colors.black,
+                                        content: Text(
+                                          'Since you have not been connected to internet for few days now, your card data is not visible here. \n\nWhen you connect to network again, press - “Sync” button on the top right to restore card details.',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(fontSize: 16),
+                                        ));
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
+                                    // Fluttertoast.showToast(
+                                    //     msg:
+                                    //         "Since you have not been connected to internet for few days now, your card data is not visible here. \n\nWhen you connect to network again, press - “Sync” button on the top right to restore card details.",
+                                    //     toastLength: Toast.LENGTH_LONG);
                                   }
                                 } catch (e) {
                                   Navigator.push(
