@@ -127,14 +127,14 @@ class _CardListState extends State<CardListScreen> {
         bottomNavigationBar: Container(
           padding: const EdgeInsets.all(20),
           decoration: const BoxDecoration(
-              color: Colors.black,
+              color: Colors.deepPurple,
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(10), topRight: Radius.circular(10))),
           child: const Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                "Tradie ID was designed and developed by E-Soft Technologies in partnership with I&F Consulting Group. If you would like to have Tradie ID in your business, just contact Paul on 0419 228 408",
+                "Tradie ID is designed and developed by E-Soft Technologies Pty. Ltd in partnership with I&F Consulting Group. If you would like to have Tradie ID in your business, just contact Paul on 0419 228 408",
                 style: TextStyle(color: Colors.white, fontSize: 12),
                 textAlign: TextAlign.center,
               )
