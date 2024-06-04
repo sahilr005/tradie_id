@@ -292,24 +292,31 @@ class _CardShowState extends State<CardShow> {
                         ),
                         const SizedBox(height: 15),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Image.asset("assets/women.png", width: 100),
-                            const SizedBox(width: 20),
+                            Image.asset(
+                              "assets/Homes NSW Image.png",
+                              width: 100,
+                              height: 60,
+                              alignment: Alignment.centerLeft,
+                            ),
+                            // Image.asset("assets/women.png", width: 100),
+                            // const SizedBox(width: 20),
                             Image.asset("assets/logo.jpeg", width: 90),
                           ],
                         ),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 20),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Image.asset("assets/link-wentworth-logo.png",
                                 width: 90),
-                            const SizedBox(width: 20),
-                            Image.asset(
-                              "assets/NSW-LAHC-1024x289.png",
-                              width: 110,
-                            ),
+                            // const SizedBox(width: 20),
+                            Image.asset("assets/women.png", width: 100),
+                            // Image.asset(
+                            //   "assets/NSW-LAHC-1024x289.png",
+                            //   width: 110,
+                            // ),
                           ],
                         ),
                       ],
