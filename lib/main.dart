@@ -82,10 +82,14 @@ class MyApp extends StatelessWidget {
       ),
       home: UpgradeAlert(
         upgrader: Upgrader(
-          dialogStyle: UpgradeDialogStyle.cupertino,
-          showIgnore: false,
-          showLater: false,
+          upgraderOS: MockUpgraderOS(
+            android: true,
+            ios: true,
+          ),
+          upgraderDevice: MockUpgraderDevice(),
         ),
+        showIgnore: false,
+        showLater: false,
         child: MultiBlocProvider(
           providers: [
             BlocProvider<LoginBloc>(

@@ -126,7 +126,7 @@ class _CardShowState extends State<CardShow> {
                                           // const SizedBox(height: 70),
                                           // const Spacer(),
                                           SizedBox(
-                                            width: Get.width - 260,
+                                            width: Get.width - 270,
                                             child: Text(
                                               "${widget.cardData.name} ${widget.cardData.lastname}",
                                               style: const TextStyle(
@@ -141,13 +141,13 @@ class _CardShowState extends State<CardShow> {
                                           ),
                                           const SizedBox(height: 10),
                                           Text(
-                                            "Ph:${widget.userData.get("phone_no") ?? ""}",
+                                            "Assett Ph: ${widget.userData.get("phone_no") ?? ""}",
                                             style: const TextStyle(
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
                                           Text(
-                                            "Lic No:${widget.userData.get("license") ?? ""}",
+                                            "Lic No: ${widget.userData.get("license") ?? ""}",
                                             style: const TextStyle(
                                               fontWeight: FontWeight.w600,
                                             ),
@@ -161,6 +161,12 @@ class _CardShowState extends State<CardShow> {
                                       children: [
                                         Text(
                                           "Card No: ${widget.cardData.cardNo}",
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          "Expiry: ${DateFormat("d MMM yyy").format(expiryDate)}",
                                           style: const TextStyle(
                                               color: Colors.black,
                                               fontWeight: FontWeight.bold),
@@ -191,11 +197,13 @@ class _CardShowState extends State<CardShow> {
                                     height: 14,
                                     color: Colors.blueGrey,
                                     thickness: .1),
-                                Text(
-                                  "Contractor/Employee on behalf of ${widget.userData.get("name")}",
-                                  style: const TextStyle(
+                                const Text(
+                                  "This contractor has read, acknowledged and agreed to comply with the Homes NSW's Code of Ethical Conduct and Assett's Code of Conduct.",
+                                  // "Contractor/Employee on behalf of ${widget.userData.get("name")}",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
                                     fontWeight: FontWeight.w500,
-                                    fontSize: 12,
+                                    fontSize: 11,
                                   ),
                                 )
                               ],
@@ -285,12 +293,25 @@ class _CardShowState extends State<CardShow> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Image.asset("assets/logo.png", width: 90),
-                            Image.asset("assets/imgpsh_fullsize_anim.png",
+                            Image.asset("assets/sg-removebg-preview.png",
                                 width: 100),
+                            Image.asset("assets/logo.jpeg", width: 90),
+                            // Image.asset("assets/imgpsh_fullsize_anim.png",
+                            //     width: 100),
                             // Image.asset("assets/sgch-logo.png", width: 100),
                           ],
                         ),
-                        const SizedBox(height: 15),
+                        // const SizedBox(height: 15),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //   children: [
+
+                        //     // Image.asset("assets/women.png", width: 100),
+                        //     // const SizedBox(width: 20),
+                        //     Image.asset("assets/logo.jpeg", width: 90),
+                        //   ],
+                        // ),
+                        const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -300,25 +321,28 @@ class _CardShowState extends State<CardShow> {
                               height: 60,
                               alignment: Alignment.centerLeft,
                             ),
-                            // Image.asset("assets/women.png", width: 100),
-                            // const SizedBox(width: 20),
-                            Image.asset("assets/logo.jpeg", width: 90),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
                             Image.asset("assets/link-wentworth-logo.png",
-                                width: 90),
+                                width: 150),
                             // const SizedBox(width: 20),
-                            Image.asset("assets/women.png", width: 100),
+
+                            // Image.asset("assets/imgpsh_fullsize_anim.png",
+                            //     width: 100),
+                            // Image.asset("assets/women.png", width: 100),
                             // Image.asset(
                             //   "assets/NSW-LAHC-1024x289.png",
                             //   width: 110,
                             // ),
                           ],
                         ),
+                        const SizedBox(height: 20),
+                        const Text(
+                          "This contractor is a Delivery Partner on behalf of Assett Group Services and Homes NSW. The key contact for Homes NSW tenants is Homes NSW Maintenance Hub: 1800 422 322",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 11,
+                          ),
+                        )
                       ],
                     ),
                   ),
